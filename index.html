@@ -2,6 +2,12 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
+<meta name="theme-color" content="#284048">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="AUFRECHT Check-In">
+<link rel="apple-touch-icon" href="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzNjUiIGhlaWdodD0iMTcyIiBmaWxsPSJub25lIiB2aWV3Qm94PSIwIDAgMzY1IDE3MiI+PHBhdGggZmlsbD0iI2ZmZiIgZD0iTTIzMi4xIDg2LjIyM2MwIDI3LjE4Ni0yMS45NjEgNDkuMjIzLTQ5LjA1IDQ5LjIyMy0yNy4wOSAwLTQ5LjA1LTIyLjAzNy00OS4wNS00OS4yMjNDMTM0IDU5LjA0IDE1NS45NiAzNyAxODMuMDUgMzdzNDkuMDQ5IDIyLjAzOSA0OS4wNSA0OS4yMjMiLz48cGF0aCBmaWxsPSIjMDBmMmZmIiBkPSJtMTkxLjAzNSAxMDIuNjc0LTguMzc4LTguMjQ2IDUuMTkzLTEzLjkzNGMuOTk0LTIuMjEyLS4xNzctMy42ODUtLjQyMi00LjAyM2w3LjkxNCA3Ljc5My00LjY5OSAxNC4zM2MtLjc2MiAyLjIwOS4wMTMgMy4yMTQuMzg5IDQuMDh6Ii8+PHBhdGggZmlsbD0iI2ZmMDA5NCIgZD0ibTE1OS4xOTUgMTAyLjU3My0xNi4xNTctMTMuNDEyYy0yLjA1Ny0yLjE2LS41My01LjczMyAyLjQ0Ni01LjczM2gxMy4yODZjLjkyNSAwIDEuODA4LjM4IDIuNDQ2IDEuMDQ3bDIuMjEgMS44MzgtNC41OTcgMTIuMzM4Yy0uNzgyIDEuMzQyLS41MjQgMi44ODguMzYzIDMuOTIyeiIvPjxwYXRoIGZpbGw9IiNmZmJhMDAiIGQ9Im0xODYuOTggODAuNDk0LTguMDM4IDIxLjU2N2EzLjM2IDMuMzYgMCAwIDEtMi41MDEgMS42NDcgNSA1IDAgMCAxLS4yOTguMDNjLS4wNjUgMC0uMTI0LjAwNi0uMTg5LjAwNmgtMTMuMzIycS0uMDkxLjAwMS0uMTgzLS4wMDZhMy4zOCAzLjM4IDAgMCAxLTIuMjI3LTEuMDQxbC0uMTUxLS4xMjRjLS44ODYtMS4wMzQtMS4xNDctMi41OC0uMzYzLTMuOTIybDguMDM4LTIxLjU2NmEzLjM4IDMuMzggMCAwIDEgMi40NzUtMS42NDggNCA0IDAgMCAxIC4zMTgtLjAzM2MuMDY1IDAgLjEyNC0uMDA2LjE4OS0uMDA2aDEzLjMzMmMuMTIxIDAgLjI0NS4wMDYuMzYzLjAxNi4wNTkuMDEuMTE4LjAxMy4xNzcuMDIzIDIuMjgyLjM1OCAzLjQ2MiAyLjc0NCAyLjM4MyA1LjA1NHoiLz48cGF0aCBmaWxsPSIjODVmZjAwIiBkPSJtMjIwLjAxNyA3My44NTYtOS4yNjcgMjguMjZhMy4zOCAzLjM4IDAgMCAxLTIuODkxIDEuNjI4aC0xMy40NDZxLS4xODYgMC0uMzYzLS4wMTZjLTIuNDItLjI1My0zLjM3Mi0yLjc3My0yLjUyOC01LjEzbDkuMjY3LTI4LjI2YTMuMzkgMy4zOSAwIDAgMSAyLjg5MS0xLjYyN2gxMy40NDZjMi42MzkgMCA0LjI2MSAyLjg5NCAyLjg5MSA1LjE1eiIvPjwvc3ZnPg==">
+<link rel="manifest" href="manifest.json">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>AUFRECHT Check-In</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
@@ -11,244 +17,176 @@
 :root{
   --pink:#ff3a94;--pink-600:#e91e7d;
   --amber:#ffbd03;--cyan:#57efff;--lime:#a6fd29;
-  --slate:#284048;--slate-800:#1d3036;--slate-700:#34505a;
+  --slate:#284048;--slate-700:#34505a;
   --slate-500:#5d7079;--slate-400:#8a99a0;--slate-300:#c2ccd0;
   --mist:#e8f1f5;--mist-200:#d7e6ed;--mist-300:#c3dbe6;
   --green:#28a745;--white:#fff;
   --font:'Dosis',system-ui,sans-serif;
-  --radius-pill:999px;--radius-lg:20px;--radius-md:14px;
 }
 html,body{height:100%;font-family:var(--font);background:var(--mist);-webkit-font-smoothing:antialiased}
-.app{max-width:420px;margin:0 auto;min-height:100vh;background:var(--white);display:flex;flex-direction:column;position:relative}
-
-/* HEADER */
+.app{max-width:420px;margin:0 auto;min-height:100vh;background:var(--white);display:flex;flex-direction:column}
 .header{background:var(--slate);padding:20px 24px 18px;flex-shrink:0}
 .header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.header-logo{display:flex;gap:3px}
-.header-logo span{width:8px;height:16px;border-radius:2px;transform:skewX(-12deg)}
-.header-logo span:nth-child(1){background:var(--pink)}
-.header-logo span:nth-child(2){background:var(--amber)}
-.header-logo span:nth-child(3){background:var(--cyan)}
-.header-logo span:nth-child(4){background:var(--lime)}
-.header-brand{color:rgba(255,255,255,0.5);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
-.header h1{color:var(--white);font-size:19px;font-weight:800;line-height:1.2}
-.header p{color:var(--slate-400);font-size:13px;font-weight:500;margin-top:2px}
-.header-signet{height:3px;margin-top:16px;border-radius:2px;background:linear-gradient(90deg,var(--pink) 0%,var(--pink) 25%,var(--amber) 25%,var(--amber) 50%,var(--cyan) 50%,var(--cyan) 75%,var(--lime) 75%)}
-
-/* BODY */
-.body{flex:1;padding:20px;overflow-y:auto}
-
-/* STATS */
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
-.stat{background:var(--mist);border-radius:var(--radius-md);padding:14px;text-align:center}
-.stat-num{font-size:30px;font-weight:800;color:var(--slate);line-height:1}
-.stat-label{font-size:11px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.07em;margin-top:4px}
-.stat-pink .stat-num{color:var(--pink)}
-
-/* LOGIN */
-.login-card{background:var(--slate);border-radius:var(--radius-lg);padding:28px 24px;text-align:center;margin-bottom:20px}
-.login-card h2{color:var(--white);font-size:18px;font-weight:800;margin-bottom:8px}
-.login-card p{color:var(--slate-400);font-size:14px;font-weight:500;margin-bottom:20px;line-height:1.5}
-.login-btn{width:100%;background:var(--pink);color:var(--white);border:none;border-radius:var(--radius-pill);padding:16px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:10px}
-.login-btn:hover{background:var(--pink-600);transform:translateY(-1px)}
-.login-btn svg{flex-shrink:0}
-
-/* SCAN AREA */
-.scan-area{background:var(--slate);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
-.scan-label{color:var(--slate-400);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px}
-.scan-box{width:100%;aspect-ratio:1;border:2px dashed rgba(255,255,255,0.15);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;background:rgba(0,0,0,0.2)}
-.scan-box:hover{border-color:var(--pink)}
-.scan-box video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px}
-.scan-box canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0}
-.scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none}
-.scan-frame{width:160px;height:160px;border-radius:12px;border:2px solid var(--pink);position:relative}
-.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:20px;height:20px;border-color:var(--white);border-style:solid}
-.scan-frame::before{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
-.scan-frame::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
-.scan-hint{color:rgba(255,255,255,0.5);font-size:13px;font-weight:600}
-.scan-active .scan-hint{color:var(--pink)}
-.camera-btn{width:100%;background:var(--pink);color:var(--white);border:none;border-radius:var(--radius-pill);padding:14px;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;margin-top:12px;transition:all 0.15s}
-.camera-btn:hover{background:var(--pink-600)}
-.camera-btn.active{background:var(--slate-700)}
-.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:rgba(255,255,255,0.25);font-size:12px;font-weight:600}
+.logo-bars{display:flex;gap:3px}
+.logo-bars span{width:6px;height:16px;border-radius:2px;display:block;transform:skewX(-10deg)}
+.brand{color:#fff;font-size:14px;font-weight:800;letter-spacing:0.01em}
+.brand em{color:var(--pink);font-style:normal}
+.header h1{color:var(--white);font-size:18px;font-weight:800;line-height:1.2}
+.header p{color:var(--slate-400);font-size:12px;font-weight:500;margin-top:2px}
+.signet{height:3px;margin-top:14px;border-radius:2px;background:linear-gradient(90deg,var(--pink) 0%,var(--pink) 25%,var(--amber) 25%,var(--amber) 50%,var(--cyan) 50%,var(--cyan) 75%,var(--lime) 75%)}
+.user-bar{display:flex;align-items:center;justify-content:space-between;padding:8px 24px;background:rgba(0,0,0,0.15);margin-top:14px;border-radius:8px}
+.user-info{display:flex;align-items:center;gap:8px}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--pink);color:#fff;font-size:10px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.user-name{color:rgba(255,255,255,0.7);font-size:12px;font-weight:600}
+.logout-btn{color:rgba(255,255,255,0.4);font-size:11px;background:none;border:none;font-family:var(--font);cursor:pointer;font-weight:600}
+.body{flex:1;padding:16px;overflow-y:auto}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
+.stat{background:var(--white);border-radius:12px;padding:14px;text-align:center;border:1.5px solid var(--mist-300)}
+.stat-num{font-size:28px;font-weight:800;color:var(--slate)}
+.stat-num.pink{color:var(--pink)}
+.stat-lbl{font-size:10px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.07em;margin-top:3px}
+.login-card{background:var(--slate);border-radius:16px;padding:24px;text-align:center}
+.login-card h2{color:#fff;font-size:17px;font-weight:800;margin-bottom:8px}
+.login-card p{color:var(--slate-400);font-size:13px;font-weight:500;margin-bottom:18px;line-height:1.5}
+.btn-ms{width:100%;background:var(--pink);color:#fff;border:none;border-radius:999px;padding:15px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+.scan-box{background:var(--slate);border-radius:16px;padding:16px;margin-bottom:14px}
+.scan-lbl{color:var(--slate-400);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
+.scan-area{background:rgba(0,0,0,0.2);border-radius:10px;height:200px;display:flex;align-items:center;justify-content:center;border:1.5px dashed rgba(255,255,255,0.12);position:relative;overflow:hidden;cursor:pointer}
+.scan-area video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.scan-frame{width:120px;height:120px;position:relative;z-index:2}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:20px;height:20px;border-color:var(--pink);border-style:solid}
+.scan-frame::before{top:0;left:0;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.scan-frame::after{bottom:0;right:0;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.scan-hint{color:rgba(255,255,255,0.35);font-size:12px;font-weight:600;position:absolute;bottom:10px;z-index:2;width:100%;text-align:center}
+.btn-cam{width:100%;background:var(--pink);color:#fff;border:none;border-radius:999px;padding:13px;font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;margin-top:10px}
+.btn-cam.off{background:var(--slate-700)}
+.divider{display:flex;align-items:center;gap:8px;margin:10px 0;color:rgba(255,255,255,0.25);font-size:10px;font-weight:600}
 .divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.1)}
-.manual-input input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;color:var(--white);font-family:var(--font);font-size:15px;font-weight:600;outline:none;transition:all 0.15s}
-.manual-input input::placeholder{color:rgba(255,255,255,0.25)}
-.manual-input input:focus{border-color:var(--pink);background:rgba(255,58,148,0.07)}
-.search-btn{width:100%;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:all 0.15s}
-.search-btn:hover{background:rgba(255,255,255,0.12)}
-
-/* RESULT */
-.result-card{background:var(--white);border:1.5px solid var(--mist-200);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px}
-.result-head{background:var(--mist);padding:18px 20px}
-.result-avatar{width:44px;height:44px;border-radius:50%;background:var(--slate);color:var(--white);font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
-.result-name{font-size:21px;font-weight:800;color:var(--slate);line-height:1.2}
-.result-org{font-size:13px;font-weight:600;color:var(--slate-500);margin-top:3px}
-.result-body{padding:0 20px}
-.result-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--mist)}
-.result-row:last-child{border-bottom:none}
-.result-key{font-size:12px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em}
-.result-val{font-size:14px;font-weight:700;color:var(--slate)}
-.badge{display:inline-block;padding:4px 12px;border-radius:var(--radius-pill);font-size:12px;font-weight:700}
+.manual-row{display:flex;gap:6px}
+.manual-input{flex:1;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);border-radius:8px;padding:10px 12px;color:#fff;font-family:var(--font);font-size:13px;font-weight:600;outline:none}
+.manual-input::placeholder{color:rgba(255,255,255,0.25)}
+.manual-input:focus{border-color:var(--pink)}
+.btn-search{background:var(--pink);color:#fff;border:none;border-radius:8px;padding:10px 14px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+.result-card{background:#fff;border-radius:14px;overflow:hidden;margin-bottom:12px;border:1.5px solid var(--mist-300)}
+.result-head{background:var(--mist);padding:16px;border-bottom:1.5px solid var(--mist-300)}
+.avatar{width:40px;height:40px;border-radius:50%;background:var(--slate);color:#fff;font-size:14px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.result-name{font-size:19px;font-weight:800;color:var(--slate)}
+.result-org{font-size:12px;font-weight:600;color:var(--slate-500);margin-top:2px}
+.result-body{padding:0 16px}
+.row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--mist)}
+.row:last-child{border:none}
+.row-key{font-size:11px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em}
+.row-val{font-size:13px;font-weight:700;color:var(--slate)}
+.badge{padding:4px 12px;border-radius:999px;font-size:11px;font-weight:700}
 .badge-green{background:#e8f5e9;color:#1b5e20}
 .badge-amber{background:#fff8e1;color:#e65100}
 .already-box{background:#fce4ec;border-radius:10px;padding:12px 16px;margin-bottom:12px;border-left:3px solid var(--pink)}
-.already-box p{color:#880e4f;font-size:14px;font-weight:700}
-.already-box span{color:#c2185b;font-size:12px;font-weight:500}
-.checkin-btn{width:100%;border:none;border-radius:var(--radius-pill);padding:18px;font-family:var(--font);font-size:18px;font-weight:800;cursor:pointer;transition:all 0.2s;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
-.checkin-btn.ready{background:var(--pink);color:var(--white)}
-.checkin-btn.ready:hover{background:var(--pink-600);transform:translateY(-2px)}
-.checkin-btn.done{background:var(--green);color:var(--white);cursor:default}
-.checkin-btn.disabled{background:var(--mist-200);color:var(--slate-400);cursor:not-allowed}
-.reset-btn{width:100%;background:transparent;color:var(--slate-500);border:1.5px solid var(--mist-200);border-radius:var(--radius-pill);padding:14px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s}
-.reset-btn:hover{border-color:var(--slate-300);color:var(--slate)}
-.not-found-box{text-align:center;padding:28px 20px;background:var(--mist);border-radius:var(--radius-md);margin-bottom:16px}
-.not-found-box h3{color:var(--slate);font-size:18px;font-weight:800;margin-bottom:6px}
-.not-found-box p{color:var(--slate-500);font-size:14px;font-weight:500}
-
-/* LOADING */
+.already-box p{color:#880e4f;font-size:13px;font-weight:700}
+.btn-checkin{width:100%;background:var(--green);color:#fff;border:none;border-radius:999px;padding:16px;font-family:var(--font);font-size:17px;font-weight:800;cursor:pointer;margin-bottom:10px;display:block;text-align:center}
+.btn-checkin:disabled{background:var(--mist-300);color:var(--slate-400);cursor:not-allowed}
+.btn-checkin.done{background:#1e7e34}
+.btn-reset{width:100%;background:#1a2c33;color:#fff;border:none;border-radius:999px;padding:14px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;display:block;text-align:center}
+.not-found{text-align:center;padding:28px;background:var(--mist);border-radius:12px;margin-bottom:12px}
+.not-found h3{color:var(--slate);font-size:17px;font-weight:800;margin-bottom:6px}
+.not-found p{color:var(--slate-500);font-size:13px}
 .loading{display:flex;align-items:center;justify-content:center;padding:40px;flex-direction:column;gap:12px}
 .spinner{width:32px;height:32px;border:3px solid var(--mist-200);border-top-color:var(--pink);border-radius:50%;animation:spin 0.7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .loading p{color:var(--slate-500);font-size:14px;font-weight:600}
-
-/* TOAST */
-.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--slate);color:var(--white);padding:12px 24px;border-radius:var(--radius-pill);font-size:14px;font-weight:700;transition:transform 0.3s;z-index:100;white-space:nowrap}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--slate);color:#fff;padding:12px 24px;border-radius:999px;font-size:14px;font-weight:700;transition:transform 0.3s;z-index:100;white-space:nowrap}
 .toast.show{transform:translateX(-50%) translateY(0)}
 .toast.success{background:var(--green)}
 .toast.error{background:#c62828}
-
-/* USER INFO */
-.user-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.07)}
-.user-info{display:flex;align-items:center;gap:8px}
-.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--pink);color:var(--white);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
-.user-name{color:rgba(255,255,255,0.7);font-size:12px;font-weight:600}
-.logout-btn{color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--font);padding:4px 8px;border-radius:6px;transition:all 0.15s}
-.logout-btn:hover{color:var(--white);background:rgba(255,255,255,0.1)}
 .hidden{display:none!important}
+
+.install-btn{background:rgba(255,255,255,0.1);color:rgba(255,255,255,0.8);border:1.5px solid rgba(255,255,255,0.2);border-radius:999px;padding:6px 14px;font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;margin-top:10px;display:block;width:100%;text-align:center}
+
+.logo-img{height:44px;width:auto;display:block}
 </style>
 </head>
 <body>
 <div class="app">
   <div class="header">
     <div class="header-top">
-      <div class="header-logo">
-        <span></span><span></span><span></span><span></span>
-      </div>
-      <span class="header-brand">AUFRECHT e.V.</span>
-    </div>
-    <div id="user-bar" class="user-bar hidden">
-      <div class="user-info">
-        <div class="user-avatar" id="user-avatar">?</div>
-        <span class="user-name" id="user-name">Nicht angemeldet</span>
-      </div>
-      <button class="logout-btn" onclick="logout()">Abmelden</button>
+      <img src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTYzOCIgaGVpZ2h0PSI0MTMiIHZpZXdCb3g9IjgxIDMxNCAxNzU3IDQxMyIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KCgo8cGF0aCBkPSJNNjI3LjM2NyA2MDMuOTQyQzYyNy4zNjcgNjAzLjI4MSA2MjcuNDQ3IDYwMi43NiA2MjcuNjI3IDYwMi40MTlMNjgyLjgyOSA0MjQuMzM0QzY4My41MTEgNDIxLjk0OSA2ODUuMDM0IDQyMC43NDcgNjg3LjM3OSA0MjAuNzQ3QzY4OS43MjQgNDIwLjc0NyA2OTEuMzI4IDQyMS45MjkgNjkyLjE5IDQyNC4zMTRMNzQ2LjgxIDYwMi40OTlDNzQ2LjgxIDYwMi42NiA3NDYuODUxIDYwMi44OCA3NDYuOTMxIDYwMy4xMkM3NDcuMDExIDYwMy4zNjEgNzQ3LjA3MSA2MDMuNTgxIDc0Ny4wNzEgNjAzLjc0MkM3NDcuMDcxIDYwNC45MDQgNzQ2LjU3IDYwNS45MDYgNzQ1LjU0OCA2MDYuNzQ3Qzc0NC41MjUgNjA3LjU4OSA3NDMuMzQzIDYwOC4wMSA3NDEuOTggNjA4LjAxQzczOS45MzUgNjA4LjAxIDczOC41OTIgNjA2LjkwOCA3MzcuOTExIDYwNC43MDNMNzI0Ljk2MiA1NjMuMDQzSDY0OC4yNTNMNjM1LjU0NSA2MDQuMzgzQzYzNC45NDMgNjA2LjgwOCA2MzMuNTggNjA4LjAxIDYzMS40NTYgNjA4LjAxQzYyOC43MyA2MDguMDEgNjI3LjM2NyA2MDYuNjY3IDYyNy4zNjcgNjAzLjk0MlpNNjUxLjA1OSA1NTMuOTA1SDcyMi4xNzZMNjg2Ljc3OCA0MzcuNzRMNjUxLjA1OSA1NTMuOTA1WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTc1OC4yNTYgNTU3LjE5MVY0MjYuNTk4Qzc1OC4yNTYgNDIzLjcxMyA3NTkuNzc5IDQyMi4yOSA3NjIuODI2IDQyMi4yOUM3NjUuODczIDQyMi4yOSA3NjcuMzk2IDQyMy43MzMgNzY3LjM5NiA0MjYuNTk4VjU1Ny4xOTFDNzY3LjM5NiA1NzEuNTk5IDc3MC44NjQgNTgyLjM4IDc3Ny44MTkgNTg5LjU3NEM3ODQuNzU0IDU5Ni43ODggNzk0Ljc1NiA2MDAuMzc1IDgwNy44MDUgNjAwLjM3NUM4MjAuODU0IDYwMC4zNzUgODMwLjg5NiA1OTYuNzg4IDgzNy45MTIgNTg5LjU3NEM4NDQuOTQ3IDU4Mi4zOCA4NDguNDU1IDU3MS41NzkgODQ4LjQ1NSA1NTcuMTkxVjQyNi41OThDODQ4LjQ1NSA0MjMuNzEzIDg0OS45NzggNDIyLjI5IDg1My4wMjUgNDIyLjI5Qzg1Ni4wNzIgNDIyLjI5IDg1Ny41OTUgNDIzLjczMyA4NTcuNTk1IDQyNi41OThWNTU3LjE5MUM4NTcuNTk1IDU3NS4zMDYgODUzLjA2NSA1ODguNTcyIDg0NC4wMDUgNTk2Ljk0OEM4MzQuOTI1IDYwNS4zMjUgODIyLjg1OCA2MDkuNTMzIDgwNy43ODUgNjA5LjUzM0M3OTIuNzEyIDYwOS41MzMgNzgwLjY4NSA2MDUuMzQ1IDc3MS43MDUgNTk2Ljk0OEM3NjIuNzI2IDU4OC41NzIgNzU4LjIzNiA1NzUuMzA2IDc1OC4yMzYgNTU3LjE5MUg3NTguMjU2WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTg4My41MzIgNjAzLjcwMlY0MjYuODc5Qzg4My41MzIgNDIzLjgzMyA4ODUuMDU2IDQyMi4zMTEgODg4LjEwMiA0MjIuMzExSDk3OC41NjJDOTgxLjQ0OSA0MjIuMzExIDk4Mi44OTIgNDIzLjc1MyA5ODIuODkyIDQyNi42MTlDOTgyLjg5MiA0MjkuODQ1IDk4MS40NDkgNDMxLjQ0OCA5NzguNTYyIDQzMS40NDhIODkyLjY1M1Y1MTAuNDYxSDkzMy4zMjJDOTM2LjIwOSA1MTAuNDYxIDkzNy42MzIgNTEyLjA2NCA5MzcuNjMyIDUxNS4yOTFDOTM3LjYzMiA1MTguMTc2IDkzNi4xODkgNTE5LjU5OSA5MzMuMzIyIDUxOS41OTlIODkyLjY1M1Y2MDMuNzAyQzg5Mi42NTMgNjA2LjU4NyA4OTEuMTI5IDYwOC4wMSA4ODguMDgyIDYwOC4wMUM4ODUuMDM2IDYwOC4wMSA4ODMuNTEyIDYwNi41NjcgODgzLjUxMiA2MDMuNzAySDg4My41MzJaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNOTkxLjc5MSA1OTcuNTlWNDMyLjQ1Qzk5MS43OTEgNDI5Ljc0NCA5OTIuODE0IDQyNy4zOCA5OTQuODM4IDQyNS4zMzZDOTk2Ljg4MyA0MjMuMjkyIDk5OS40MDggNDIyLjI5IDEwMDIuNDggNDIyLjI5SDEwNTIuNzlDMTA5Mi45MyA0MjIuMjkgMTExMy4wMiA0MzkuOTg0IDExMTMuMDIgNDc1LjM5M0MxMTEzLjAyIDQ4OS4yOCAxMTEwLjAxIDUwMC40NjEgMTEwNCA1MDguOTM4QzEwOTcuOTkgNTE3LjQxNCAxMDg5Ljg5IDUyMy4xNjUgMTA3OS43MyA1MjYuMjExTDExMTMuMDIgNTg3Ljk1MUMxMTEzLjg2IDU4OC45NzMgMTExNC4yOCA1OTAuMzM2IDExMTQuMjggNTkyLjAxOUMxMTE0LjI4IDU5Ni4yNDcgMTExMi4wOCA2MDAuMTk1IDExMDcuNjcgNjAzLjgyMkMxMTAzLjI2IDYwNy40NjkgMTA5OC42MSA2MDkuMjkyIDEwOTMuNyA2MDkuMjkyQzEwODguNzkgNjA5LjI5MiAxMDg0Ljk4IDYwNi42NjcgMTA4Mi4yNyA2MDEuNDE3TDEwNDYuMTcgNTMxLjMwMUgxMDI0LjgyVjU5Ny42MUMxMDI0LjgyIDYwMC44MzYgMTAyMy4yMiA2MDMuMzgxIDEwMTkuOTkgNjA1LjI0NEMxMDE2Ljc3IDYwNy4xMDggMTAxMi44OCA2MDguMDMgMTAwOC4zMSA2MDguMDNDMTAwMy43NCA2MDguMDMgMTAwMC4wNSA2MDcuMTA4IDk5Ni43NDIgNjA1LjI0NEM5OTMuNDM1IDYwMy4zODEgOTkxLjc5MSA2MDAuODM2IDk5MS43OTEgNTk3LjYxVjU5Ny41OVpNMTAyNC44MiA1MDUuMzcxSDEwNTIuNzlDMTA3MC45MSA1MDUuMzcxIDEwNzkuOTcgNDk2LjM5NCAxMDc5Ljk3IDQ3OC40MzlDMTA3OS45NyA0NjAuNDg0IDEwNzAuOTEgNDUxLjI2NiAxMDUyLjc5IDQ1MS4yNjZIMTAyNC44MlY1MDUuMzcxWiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTExMzEuNTYgNTk3LjU5VjQzMi43MUMxMTMxLjU2IDQyOS40ODQgMTEzMyA0MjYuOTU5IDExMzUuODkgNDI1LjA5NUMxMTM4Ljc4IDQyMy4yMzIgMTE0Mi4xNiA0MjIuMjkgMTE0Ni4wNSA0MjIuMjlIMTIzNi41M0MxMjM5LjkyIDQyMi4yOSAxMjQyLjUxIDQyMy43MzMgMTI0NC4yOSA0MjYuNTk4QzEyNDYuMDcgNDI5LjQ4NCAxMjQ2Ljk1IDQzMi43OSAxMjQ2Ljk1IDQzNi41MThDMTI0Ni45NSA0NDAuNTg1IDEyNDYuMDEgNDQ0LjA1MiAxMjQ0LjE1IDQ0Ni45MzhDMTI0Mi4yOCA0NDkuODIzIDEyMzkuNzQgNDUxLjI0NiAxMjM2LjUzIDQ1MS4yNDZIMTE2NC42MVY1MDIuMDY1SDEyMDMuMjRDMTIwNi40NSA1MDIuMDY1IDEyMDguOTkgNTAzLjM4NyAxMjEwLjg2IDUwNS45OTJDMTIxMi43MiA1MDguNjE3IDEyMTMuNjYgNTExLjcwMyAxMjEzLjY2IDUxNS4yN0MxMjEzLjY2IDUxOC40NzYgMTIxMi43OCA1MjEuNDAyIDEyMTEgNTI0LjAyN0MxMjA5LjIxIDUyNi42NTIgMTIwNi42MyA1MjcuOTc1IDEyMDMuMjQgNTI3Ljk3NUgxMTY0LjYxVjU3OS4wMzRIMTIzNi41M0MxMjM5Ljc0IDU3OS4wMzQgMTI0Mi4yOCA1ODAuNDc2IDEyNDQuMTUgNTgzLjM2MkMxMjQ2LjAxIDU4Ni4yNDggMTI0Ni45NSA1ODkuNzE0IDEyNDYuOTUgNTkzLjc4MkMxMjQ2Ljk1IDU5Ny41MSAxMjQ2LjA3IDYwMC44MTYgMTI0NC4yOSA2MDMuNzAxQzEyNDIuNTEgNjA2LjU4NyAxMjM5LjkyIDYwOC4wMSAxMjM2LjUzIDYwOC4wMUgxMTQ2LjA1QzExNDIuMTYgNjA4LjAxIDExMzguNzggNjA3LjA4OCAxMTM1Ljg5IDYwNS4yMjRDMTEzMyA2MDMuMzYxIDExMzEuNTYgNjAwLjgxNiAxMTMxLjU2IDU5Ny41OVoiIGZpbGw9IndoaXRlIi8+CjxwYXRoIGQ9Ik0xMjUyLjI5IDU1MS4zNlY0ODAuNDgzQzEyNTIuMjkgNDYwLjUwNCAxMjU3LjcgNDQ1Ljc5NiAxMjY4LjU0IDQzNi4zOTdDMTI3OS4zOSA0MjYuOTk5IDEyOTMuNTQgNDIyLjI5IDEzMTAuOTggNDIyLjI5QzEzMjguNDEgNDIyLjI5IDEzNDMuMjkgNDI2LjY5OSAxMzU0LjU3IDQzNS40OTZDMTM2NS44NCA0NDQuMzEzIDEzNzEuNDcgNDU1Ljk5NSAxMzcxLjQ3IDQ3MC41NjNDMTM3MS40NyA0NzYuODM2IDEzNzAuMjEgNDgxLjEwNCAxMzY3LjY2IDQ4My4zODhDMTM2NS4xMiA0ODUuNjczIDEzNjAuODkgNDg2LjgxNSAxMzU0Ljk1IDQ4Ni44MTVDMTM0NC4xMSA0ODYuODE1IDEzMzguNiA0ODMuMzQ4IDEzMzguNDQgNDc2LjM5NUMxMzM4LjI4IDQ3NC4xOTEgMTMzOC4wNiA0NzIuMjg3IDEzMzcuOCA0NzAuNjg0QzEzMzcuNTMgNDY5LjA4MSAxMzM2Ljg3IDQ2Ni45NTcgMTMzNS43NSA0NjQuMzMxQzEzMzQuNjUgNDYxLjcwNiAxMzMzLjI1IDQ1OS41MDIgMTMzMS41NiA0NTcuNzE5QzEzMjkuODYgNDU1LjkzNSAxMzI3LjMzIDQ1NC40MTIgMTMyMy45NCA0NTMuMTVDMTMyMC41NiA0NTEuODg3IDEzMTYuNTcgNDUxLjI0NiAxMzEyIDQ1MS4yNDZDMTI5NC4yMiA0NTEuMjQ2IDEyODUuMzIgNDYwLjk4NSAxMjg1LjMyIDQ4MC40NjNWNTUxLjM0QzEyODUuMzIgNTcwLjgxOCAxMjk0LjM4IDU4MC41NTcgMTMxMi41IDU4MC41NTdDMTMxNy45MyA1ODAuNTU3IDEzMjIuNDQgNTc5LjcxNSAxMzI2LjExIDU3OC4wMTJDMTMyOS43NCA1NzYuMzI4IDEzMzIuMzggNTczLjkwNCAxMzMzLjk5IDU3MC43NzhDMTMzNS41OSA1NjcuNjMyIDEzMzYuNjkgNTY0Ljg0NiAxMzM3LjI5IDU2Mi40MDFDMTMzNy45IDU1OS45NTcgMTMzOC4yOCA1NTYuOTMxIDEzMzguNDQgNTUzLjM4NEMxMzM4Ljk0IDU0Ni40MyAxMzQ0LjM3IDU0Mi45NjQgMTM1NC43MSA1NDIuOTY0QzEzNjAuNjUgNTQyLjk2NCAxMzY0LjkyIDU0NC4xMDYgMTM2Ny41NCA1NDYuMzlDMTM3MC4xNyA1NDguNjc1IDEzNzEuNDkgNTUyLjk2MyAxMzcxLjQ5IDU1OS4yMTVDMTM3MS40OSA1NzQuNDY1IDEzNjUuODYgNTg2LjY0OCAxMzU0LjU5IDU5NS44MDZDMTM0My4zMyA2MDQuOTQ0IDEzMjguNzIgNjA5LjUzMyAxMzEwLjc2IDYwOS41MzNDMTI5Mi44IDYwOS41MzMgMTI3OS4yMSA2MDQuODI0IDEyNjguNDQgNTk1LjQyNUMxMjU3LjY4IDU4Ni4wMjcgMTI1Mi4zMSA1NzEuMzM5IDEyNTIuMzEgNTUxLjM0TDEyNTIuMjkgNTUxLjM2WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTEzODguNzUgNTk3LjU5VjQzMi40NUMxMzg4Ljc1IDQyOS4wNjMgMTM5MC4zNSA0MjYuNTE4IDEzOTMuNTggNDI0LjgzNUMxMzk2LjgxIDQyMy4xNTIgMTQwMC42OSA0MjIuMjkgMTQwNS4yNiA0MjIuMjlDMTQwOS44MyA0MjIuMjkgMTQxMy43NCA0MjMuMTMyIDE0MTYuOTUgNDI0LjgzNUMxNDIwLjE4IDQyNi41MzggMTQyMS43OCA0MjkuMDYzIDE0MjEuNzggNDMyLjQ1VjQ5OC43NThIMTQ3OC45N1Y0MzIuNDVDMTQ3OC45NyA0MjkuMDYzIDE0ODAuNTcgNDI2LjUxOCAxNDgzLjggNDI0LjgzNUMxNDg3LjAzIDQyMy4xNTIgMTQ5MC45MSA0MjIuMjkgMTQ5NS40OCA0MjIuMjlDMTUwMC4wNSA0MjIuMjkgMTUwMy45NCA0MjMuMTMyIDE1MDcuMTcgNDI0LjgzNUMxNTEwLjM4IDQyNi41MzggMTUxMiA0MjkuMDYzIDE1MTIgNDMyLjQ1VjU5Ny41OUMxNTEyIDYwMC44MTYgMTUxMC4zNiA2MDMuMzYxIDE1MDcuMDUgNjA1LjIyNEMxNTAzLjc0IDYwNy4wODggMTQ5OS44OSA2MDguMDEgMTQ5NS40OCA2MDguMDFDMTQ5MS4wNyA2MDguMDEgMTQ4Ny4wMSA2MDcuMDg4IDE0ODMuOCA2MDUuMjI0QzE0ODAuNTcgNjAzLjM2MSAxNDc4Ljk3IDYwMC44MTYgMTQ3OC45NyA1OTcuNTlWNTI0LjY2OEgxNDIxLjc4VjU5Ny41OUMxNDIxLjc4IDYwMC44MTYgMTQyMC4xMiA2MDMuMzYxIDE0MTYuODMgNjA1LjIyNEMxNDEzLjUyIDYwNy4wODggMTQwOS42NyA2MDguMDEgMTQwNS4yNiA2MDguMDFDMTQwMC44NSA2MDguMDEgMTM5Ni43OSA2MDcuMDg4IDEzOTMuNTggNjA1LjIyNEMxMzkwLjM3IDYwMy4zNjEgMTM4OC43NSA2MDAuODE2IDEzODguNzUgNTk3LjU5WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE1MjUuMjEgNDM2LjYzOEMxNTI1LjIxIDQzMi44NSAxNTI2LjA5IDQyOS41MDQgMTUyNy44OCA0MjYuNjE4QzE1MjkuNjYgNDIzLjczMyAxNTMyLjI0IDQyMi4yOSAxNTM1LjYzIDQyMi4yOUgxNjQzLjEzQzE2NDYuNTIgNDIyLjI5IDE2NDkuMSA0MjMuNzMzIDE2NTAuODkgNDI2LjYxOEMxNjUyLjY3IDQyOS41MDQgMTY1My41NSA0MzIuODUgMTY1My41NSA0MzYuNjM4QzE2NTMuNTUgNDQwLjQyNSAxNjUyLjYzIDQ0NC4wMzIgMTY1MC43NyA0NDYuOTE4QzE2NDguOSA0NDkuODAzIDE2NDYuMzYgNDUxLjI0NiAxNjQzLjEzIDQ1MS4yNDZIMTYwNi4wM1Y1OTcuNTNDMTYwNi4wMyA2MDAuNzc2IDE2MDQuMzggNjAzLjMyMSAxNjAxLjA4IDYwNS4yMDRDMTU5Ny43NyA2MDcuMDY4IDE1OTMuOTIgNjA4LjAxIDE1ODkuNTEgNjA4LjAxQzE1ODUuMSA2MDguMDEgMTU4MS4wMyA2MDcuMDg4IDE1NzcuODMgNjA1LjIwNEMxNTc0LjYgNjAzLjM0MSAxNTcyLjk5IDYwMC43NzYgMTU3Mi45OSA1OTcuNTNWNDUxLjI0NkgxNTM1LjYzQzE1MzIuNDMgNDUxLjI0NiAxNTI5Ljg4IDQ0OS44NDMgMTUyOC4wMiA0NDcuMDM4QzE1MjYuMTUgNDQ0LjIzMiAxNTI1LjIxIDQ0MC43NjYgMTUyNS4yMSA0MzYuNjM4WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE2MjMuMDEgNTk0LjI0M1Y1OTAuMDc1QzE2MjMuMDEgNTg2LjgyOSAxNjI0LjI5IDU4NC4wNDQgMTYyNi44NyA1ODEuNzE5QzE2MjkuNDYgNTc5LjM5NSAxNjMyLjU1IDU3OC4yMzIgMTYzNi4xNyA1NzguMjMyQzE2MzkuNTYgNTc4LjIzMiAxNjQyLjQ3IDU3OS4yNTQgMTY0NC44NSA1ODEuMjk4QzE2NDcuMjYgNTgzLjM0MiAxNjQ4LjQ2IDU4NS45NDcgMTY0OC40NiA1ODkuMTEzQzE2NDguNDYgNTkwLjMzNiAxNjQ4LjMgNTkxLjMxOCAxNjQ4IDU5Mi4wNTlDMTY0Ny43IDU5Mi44MjEgMTY0Ny4yNCA1OTMuMzQyIDE2NDYuNjQgNTkzLjY2MkMxNjQ2LjA0IDU5My45ODMgMTY0NS40NSA1OTQuMTYzIDE2NDQuOTUgNTk0LjI2M0MxNjQ0LjQ1IDU5NC4zNjQgMTY0My43NyA1OTQuNDA0IDE2NDIuOTMgNTk0LjQwNEgxNjMxLjg4VjU5NC43NDRDMTYzMS44OCA1OTYuMTY3IDE2MzIuNDMgNTk3LjMwOSAxNjMzLjQ5IDU5OC4xOTFDMTYzNC41NSA1OTkuMDUzIDE2MzUuOTcgNTk5LjQ5NCAxNjM3LjcyIDU5OS40OTRDMTYzOS4wNiA1OTkuNDk0IDE2NDAuNDYgNTk5LjEzMyAxNjQxLjkzIDU5OC40MTJDMTY0My4zOSA1OTcuNjkgMTY0NC4zNyA1OTcuMzI5IDE2NDQuODcgNTk3LjMyOUMxNjQ1Ljg0IDU5Ny4zMjkgMTY0Ni42MiA1OTcuNzcgMTY0Ny4yMiA1OTguNjcyQzE2NDcuODIgNTk5LjU3NCAxNjQ4LjE0IDYwMC40MTUgMTY0OC4xNCA2MDEuMjE3QzE2NDguMTQgNjAyLjM5OSAxNjQ3LjEyIDYwMy41NDEgMTY0NS4wNyA2MDQuNjY0QzE2NDMuMDMgNjA1Ljc4NiAxNjQwLjUgNjA2LjM0NyAxNjM3LjUgNjA2LjM0N0MxNjMzLjIzIDYwNi4zNDcgMTYyOS43NiA2MDUuMjI1IDE2MjcuMDcgNjAzQzE2MjQuMzkgNjAwLjc3NiAxNjIzLjA1IDU5Ny44NSAxNjIzLjA1IDU5NC4yMjNMMTYyMy4wMSA1OTQuMjQzWk0xNjMxLjg2IDU4OS40NTRIMTYzOC45NkMxNjM5Ljc2IDU4OS40NTQgMTY0MC4xNiA1ODkuMDUzIDE2NDAuMTYgNTg4LjIxMkMxNjQwLjE2IDU4Ny4yNSAxNjM5Ljc2IDU4Ni40ODggMTYzOC45MiA1ODUuOTI3QzE2MzguMSA1ODUuMzY2IDE2MzcuMTIgNTg1LjEwNiAxNjM1Ljk3IDU4NS4xMDZDMTYzNC44MyA1ODUuMTA2IDE2MzMuOTEgNTg1LjM4NiAxNjMzLjA5IDU4NS45MjdDMTYzMi4yNyA1ODYuNDg4IDE2MzEuODYgNTg3LjI1IDE2MzEuODYgNTg4LjIxMlY1ODkuNDU0WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTE2NTEuMTUgNjAxLjczOEMxNjUxLjE1IDYwMC41MTUgMTY1MS41NyA1OTkuNDczIDE2NTIuNDEgNTk4LjYxMkMxNjUzLjI1IDU5Ny43NSAxNjU0LjMxIDU5Ny4zMjkgMTY1NS42IDU5Ny4zMjlDMTY1Ni44IDU5Ny4zMjkgMTY1Ny44MiA1OTcuNzcgMTY1OC42OCA1OTguNjUyQzE2NTkuNTUgNTk5LjUzMyAxNjU5Ljk5IDYwMC41NTUgMTY1OS45OSA2MDEuNzM4QzE2NTkuOTkgNjAyLjkyIDE2NTkuNTUgNjAzLjk0MiAxNjU4LjY4IDYwNC44MjRDMTY1Ny44MiA2MDUuNzA1IDE2NTYuNzggNjA2LjE0NiAxNjU1LjYgNjA2LjE0NkMxNjU0LjQxIDYwNi4xNDYgMTY1My4zMSA2MDUuNzA1IDE2NTIuNDMgNjA0LjgyNEMxNjUxLjU3IDYwMy45NDIgMTY1MS4xMyA2MDIuOTIgMTY1MS4xMyA2MDEuNzM4SDE2NTEuMTVaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTY1Ni42NCA1NjcuNjcxQzE2NTYuNjQgNTY2LjY3IDE2NTcuMjYgNTY1LjgyOCAxNjU4LjUgNTY1LjEwN0MxNjU5Ljc1IDU2NC4zODUgMTY2MS4wMyA1NjQuMDI0IDE2NjIuMzcgNTY0LjAyNEMxNjY0LjAyIDU2NC4wMjQgMTY2NC45OCA1NjQuNTg2IDE2NjUuMjggNTY1LjY4OEwxNjczLjMgNTk1LjAwNEwxNjgxLjI1IDU2NS42ODhDMTY4MS41NSA1NjQuNTg2IDE2ODIuNTQgNTY0LjAyNCAxNjg0LjE2IDU2NC4wMjRDMTY4NS41IDU2NC4wMjQgMTY4Ni43OSA1NjQuMzg1IDE2ODguMDMgNTY1LjEwN0MxNjg5LjI3IDU2NS44MjggMTY4OS44OSA1NjYuNjkgMTY4OS44OSA1NjcuNjcxQzE2ODkuODkgNTY3Ljc5MiAxNjg5Ljg1IDU2Ny45OTIgMTY4OS43NyA1NjguMjkzTDE2NzkuMTMgNjAzLjE2QzE2NzguODMgNjA0LjEyMiAxNjc4LjEzIDYwNC44NDMgMTY3Ny4wNCA2MDUuMzY1QzE2NzUuOTYgNjA1Ljg4NiAxNjc0LjcyIDYwNi4xMjYgMTY3My4zIDYwNi4xMjZDMTY3MS44NyA2MDYuMTI2IDE2NzAuNjMgNjA1Ljg2NSAxNjY5LjU1IDYwNS4zNjVDMTY2OC40NyA2MDQuODY0IDE2NjcuNzYgNjA0LjEyMiAxNjY3LjQ2IDYwMy4xNkwxNjU2Ljc2IDU2OC4yOTNDMTY1Ni42OCA1NjcuOTkyIDE2NTYuNjQgNTY3Ljc3MiAxNjU2LjY0IDU2Ny42NzFaIiBmaWxsPSJ3aGl0ZSIvPgo8cGF0aCBkPSJNMTY4OC44NyA2MDEuNzM4QzE2ODguODcgNjAwLjUxNSAxNjg5LjI5IDU5OS40NzMgMTY5MC4xMyA1OTguNjEyQzE2OTAuOTggNTk3Ljc1IDE2OTIuMDQgNTk3LjMyOSAxNjkzLjMyIDU5Ny4zMjlDMTY5NC41MiA1OTcuMzI5IDE2OTUuNTUgNTk3Ljc3IDE2OTYuNDEgNTk4LjY1MkMxNjk3LjI3IDU5OS41MzMgMTY5Ny43MSA2MDAuNTU1IDE2OTcuNzEgNjAxLjczOEMxNjk3LjcxIDYwMi45MiAxNjk3LjI3IDYwMy45NDIgMTY5Ni40MSA2MDQuODI0QzE2OTUuNTUgNjA1LjcwNSAxNjk0LjUgNjA2LjE0NiAxNjkzLjMyIDYwNi4xNDZDMTY5Mi4xNCA2MDYuMTQ2IDE2OTEuMDQgNjA1LjcwNSAxNjkwLjE1IDYwNC44MjRDMTY4OS4yOSA2MDMuOTQyIDE2ODguODUgNjAyLjkyIDE2ODguODUgNjAxLjczOEgxNjg4Ljg3WiIgZmlsbD0id2hpdGUiLz4KPHBhdGggZD0iTTQ5Mi4xODggNjA0LjEwMUw0NDYuODg4IDU1OS42NzVMNDc0Ljk3IDQ4NC42MUM0ODAuMzQyIDQ3Mi42ODcgNDc0LjAwOCA0NjQuNzcxIDQ3Mi42ODUgNDYyLjkyOEw1MTUuNDc5IDUwNC45MDlMNDkwLjA2MyA1ODIuMTE5QzQ4NS45NTQgNTk0LjAyMiA0OTAuMTIzIDU5OS40MzIgNDkyLjE2OCA2MDQuMTAxSDQ5Mi4xODhaIiBmaWxsPSIjMDBGMkZGIi8+CjxwYXRoIGQ9Ik0zMjAuMDA4IDYwMy41NjFMMjMyLjYzNSA1MzEuMzAxQzIyMS41MSA1MTkuNjc4IDIyOS43NjggNTAwLjQyMSAyNDUuODY0IDUwMC40MjFIMzE3LjcwMkMzMjIuNzE0IDUwMC40MjEgMzI3LjQ4NCA1MDIuNDY1IDMzMC45MzIgNTA2LjA3MkwzNDIuODk4IDUxNS45NzFMMzE4LjA0MyA1ODIuNDZDMzEzLjgxNCA1ODkuNjk0IDMxNS4yMTcgNTk4LjAxIDMyMC4wMDggNjAzLjU4MVY2MDMuNTYxWiIgZmlsbD0iI0ZGMDA5NCIvPgo8cGF0aCBkPSJNNDcwLjI1OSA0ODQuNjFMNDQyLjE3NyA1NTkuNjc1TDQyNi43ODMgNjAwLjc5NUM0MjMuODk3IDYwNS43NDUgNDE4Ljg2NiA2MDguOTkxIDQxMy4yNTMgNjA5LjY3MkM0MTIuNzMyIDYwOS43NTIgNDEyLjE5MSA2MDkuNzkyIDQxMS42NSA2MDkuODMyQzQxMS4zMDkgNjA5LjgzMiA0MTAuOTY4IDYwOS44NzMgNDEwLjYyOCA2MDkuODczSDMzOC41NjlDMzM4LjIyOCA2MDkuODczIDMzNy45MDcgNjA5Ljg3MiAzMzcuNTg2IDYwOS44MzJDMzMzLjAxNiA2MDkuNTMyIDMyOC43MDcgNjA3LjU0OCAzMjUuNTQgNjA0LjI0MkwzMjQuNzE4IDYwMy41NkMzMTkuOTI3IDU5Ny45OSAzMTguNTI0IDU4OS42NzMgMzIyLjc1NCA1ODIuNDM5TDM0Ny42MDkgNTE1Ljk1MUwzNjYuMjEgNDY2LjIzNEMzNjkuMDc2IDQ2MS4zMjUgMzc0LjA0NyA0NTguMDk5IDM3OS41OTkgNDU3LjM1N0MzODAuMTYgNDU3LjI3NyAzODAuNzQyIDQ1Ny4yMTcgMzgxLjMyMyA0NTcuMTc3QzM4MS42NjQgNDU3LjE3NyAzODIuMDA0IDQ1Ny4xMzcgMzgyLjM0NSA0NTcuMTM3SDQ1NC40NDRDNDU1LjEwNiA0NTcuMTM3IDQ1NS43NjcgNDU3LjE3NyA0NTYuNDA5IDQ1Ny4yMzdDNDU2LjczIDQ1Ny4yNzcgNDU3LjA1IDQ1Ny4zMTcgNDU3LjM3MSA0NTcuMzU3QzQ2OS43MTggNDU5LjMwMSA0NzYuMTEyIDQ3Mi4xMjYgNDcwLjI1OSA0ODQuNTlWNDg0LjYxWiIgZmlsbD0iI0ZGQkEwMCIvPgo8cGF0aCBkPSJNNjQ4LjkzNCA0NDguODQxTDU5OC44MjMgNjAxLjA5NkM1OTUuNDk2IDYwNi41NDYgNTg5LjU2MyA2MDkuODUzIDU4My4xODkgNjA5Ljg1M0g1MTAuNDY4QzUwOS43ODcgNjA5Ljg1MyA1MDkuMTQ1IDYwOS44MTMgNTA4LjUwNCA2MDkuNzUyQzQ5NS40MTUgNjA4LjM5IDQ5MC4yNjQgNTk0LjgyNCA0OTQuODM0IDU4Mi4xMTlMNTIwLjI1IDUwNC45MDlMNTQ0Ljk2NCA0MjkuODY0QzU0OC4yOTIgNDI0LjQxMyA1NTQuMjI1IDQyMS4wODcgNTYwLjU5OSA0MjEuMDg3SDYzMy4zMTlDNjQ3LjU5MSA0MjEuMDg3IDY1Ni4zNyA0MzYuNjc3IDY0OC45NTQgNDQ4Ljg0MUg2NDguOTM0WiIgZmlsbD0iIzg1RkYwMCIvPgo8L3N2Zz4K" alt="AUFRECHT e.V." class="logo-img">
     </div>
     <h1>Düsseldorfer Konferenz 2026</h1>
     <p>Check-In · 16. Oktober 2026 · Haus der Universität</p>
-    <div class="header-signet"></div>
+    <div id="user-bar" class="user-bar hidden">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span class="user-name" id="user-name"></span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Abmelden</button>
+    </div>
+    <button id="install-btn" class="install-btn hidden" onclick="">+ Zum Homebildschirm</button>
+    <div class="signet"></div>
   </div>
 
   <div class="body">
-    <!-- STATS -->
     <div class="stats">
-      <div class="stat">
-        <div class="stat-num" id="total-count">—</div>
-        <div class="stat-label">Angemeldet</div>
-      </div>
-      <div class="stat stat-pink">
-        <div class="stat-num" id="checkin-count">—</div>
-        <div class="stat-label">Eingecheckt</div>
-      </div>
+      <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-lbl">Angemeldet</div></div>
+      <div class="stat"><div class="stat-num pink" id="checkin-count">—</div><div class="stat-lbl">Eingecheckt</div></div>
     </div>
 
-    <!-- LOGIN VIEW -->
     <div id="login-view">
       <div class="login-card">
         <h2>Anmeldung erforderlich</h2>
         <p>Bitte melde dich mit deinem AUFRECHT Microsoft-Konto an um auf die Teilnehmerliste zuzugreifen.</p>
-        <button class="login-btn" onclick="login()">
-          <svg width="20" height="20" viewBox="0 0 21 21" fill="none">
-            <path d="M10 0H0V10H10V0Z" fill="#F25022"/>
-            <path d="M21 0H11V10H21V0Z" fill="#7FBA00"/>
-            <path d="M10 11H0V21H10V11Z" fill="#00A4EF"/>
-            <path d="M21 11H11V21H21V11Z" fill="#FFB900"/>
-          </svg>
+        <button class="btn-ms" onclick="login()">
+          <svg width="18" height="18" viewBox="0 0 21 21"><path d="M10 0H0V10H10V0Z" fill="#F25022"/><path d="M21 0H11V10H21V0Z" fill="#7FBA00"/><path d="M10 11H0V21H10V11Z" fill="#00A4EF"/><path d="M21 11H11V21H21V11Z" fill="#FFB900"/></svg>
           Mit Microsoft anmelden
         </button>
       </div>
     </div>
 
-    <!-- MAIN VIEW -->
     <div id="main-view" class="hidden">
-      <!-- SCAN -->
       <div id="scan-view">
-        <div class="scan-area">
-          <div class="scan-label">QR-Code scannen</div>
-          <div class="scan-box" id="scan-box" onclick="toggleCamera()">
+        <div class="scan-box">
+          <div class="scan-lbl">QR-Code scannen</div>
+          <div class="scan-area" id="scan-area" onclick="toggleCamera()">
             <video id="video" autoplay playsinline muted class="hidden"></video>
-            <canvas id="canvas" class="hidden"></canvas>
-            <div class="scan-overlay" id="scan-overlay">
-              <div class="scan-frame"></div>
-              <p class="scan-hint" id="scan-hint">Tippen zum Scannen</p>
-            </div>
+            <div class="scan-frame" id="scan-frame"></div>
+            <div class="scan-hint" id="scan-hint">Tippen zum Scannen</div>
           </div>
-          <button class="camera-btn" id="camera-btn" onclick="toggleCamera()">Kamera starten</button>
-          <div class="divider">oder</div>
-          <div class="manual-input">
-            <input type="text" id="qr-input" placeholder="QR-Code ID eingeben (z.B. AUFRECHT-2026-1)" />
-            <button class="search-btn" onclick="searchManual()">Suchen</button>
+          <button class="btn-cam" id="cam-btn" onclick="toggleCamera()">Kamera starten</button>
+          <div class="divider">oder manuell eingeben</div>
+          <div class="manual-row">
+            <input type="text" id="qr-input" class="manual-input" placeholder="AUFRECHT-2026-1" />
+            <button class="btn-search" onclick="searchManual()">Suchen</button>
           </div>
         </div>
       </div>
 
-      <!-- LOADING -->
       <div id="loading-view" class="hidden">
-        <div class="loading">
-          <div class="spinner"></div>
-          <p id="loading-msg">Wird geladen...</p>
-        </div>
+        <div class="loading"><div class="spinner"></div><p id="loading-msg">Wird geladen...</p></div>
       </div>
 
-      <!-- RESULT VIEW -->
       <div id="result-view" class="hidden">
-        <div id="not-found-box" class="not-found-box hidden">
+        <div id="not-found" class="not-found hidden">
           <h3>Nicht gefunden</h3>
           <p id="not-found-msg"></p>
         </div>
-
         <div id="found-card" class="hidden">
           <div class="result-card">
             <div class="result-head">
-              <div class="result-avatar" id="res-avatar"></div>
+              <div class="avatar" id="res-avatar"></div>
               <div class="result-name" id="res-name"></div>
               <div class="result-org" id="res-org"></div>
             </div>
             <div class="result-body">
-              <div class="result-row">
-                <span class="result-key">Status</span>
-                <span class="result-val"><span class="badge" id="res-status"></span></span>
-              </div>
-              <div class="result-row">
-                <span class="result-key">E-Mail</span>
-                <span class="result-val" id="res-email" style="font-size:13px;word-break:break-all"></span>
-              </div>
-              <div class="result-row">
-                <span class="result-key">QR-ID</span>
-                <span class="result-val" id="res-qrid" style="font-size:13px;color:var(--slate-500)"></span>
-              </div>
+              <div class="row"><span class="row-key">Status</span><span class="row-val"><span class="badge" id="res-status"></span></span></div>
+              <div class="row"><span class="row-key">E-Mail</span><span class="row-val" id="res-email" style="font-size:12px;word-break:break-all"></span></div>
+              <div class="row"><span class="row-key">QR-ID</span><span class="row-val" id="res-qrid" style="font-size:12px;color:var(--slate-400)"></span></div>
             </div>
           </div>
-
           <div id="already-box" class="already-box hidden">
             <p>Bereits eingecheckt</p>
-            <span id="already-time"></span>
+            <span id="already-time" style="color:#c2185b;font-size:12px;font-weight:500"></span>
           </div>
-
-          <button class="checkin-btn ready" id="checkin-btn" onclick="doCheckin()">Jetzt einchecken</button>
+          <button class="btn-checkin" id="checkin-btn" onclick="doCheckin()">Jetzt einchecken</button>
         </div>
-
-        <button class="reset-btn" onclick="resetView()">← Neuen Code scannen</button>
+        <button class="btn-reset" onclick="resetView()">← Neuen Code scannen</button>
       </div>
     </div>
   </div>
@@ -257,273 +195,220 @@ html,body{height:100%;font-family:var(--font);background:var(--mist);-webkit-fon
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// KONFIGURATION – hier deine Werte eintragen
-// ============================================================
-const CONFIG = {
-  clientId: 'f9c2eb46-5654-4446-a583-3e2f5d50f6a4',          // Azure App-Registrierung Client-ID
-  tenantId: '8e0704d0-3f9e-46dc-b762-d37ce1e0beb0',           // Azure Tenant-ID
-  siteUrl: 'https://aufrechtnrw.sharepoint.com/sites/AUFRECHTe.V',
-  listName: 'Düsseldorfer Konferenz – Anmeldungen',
-  redirectUri: 'https://aufrechtnrw.sharepoint.com/sites/AUFRECHTe.V/Freigegebene%20Dokumente/Allgemeines/Verein%20Intern/D%C3%BCsseldorfer%20Konferenz%202026/aufrecht-checkin.html',
-};
+const CLIENT_ID = 'f9c2eb46-5654-4446-a583-3e2f5d50f6a4';
+const TENANT_ID = '8e0704d0-3f9e-46dc-b762-d37ce1e0beb0';
+const REDIRECT_URI = 'https://aufrechtnrw.github.io/aufrecht-checkin/';
+const LIST_NAME = 'Düsseldorfer Konferenz – Anmeldungen';
+const SITE_HOSTNAME = 'aufrechtnrw.sharepoint.com';
+const SITE_PATH = '/sites/AUFRECHTe.V';
 
-// ============================================================
-// MSAL – Microsoft Authentication
-// ============================================================
 let accessToken = null;
-let currentUser = null;
 let currentItem = null;
 let cameraStream = null;
 let scanning = false;
+let _siteId = null;
+let _listId = null;
 
-const SCOPES = ['https://graph.microsoft.com/Sites.ReadWrite.All'];
-
-function getAuthUrl(){
-  const params = new URLSearchParams({
-    client_id: CONFIG.clientId,
-    response_type: 'token',
-    redirect_uri: CONFIG.redirectUri,
-    scope: SCOPES.join(' '),
-    response_mode: 'fragment',
-    nonce: Math.random().toString(36),
-  });
-  return `https://login.microsoftonline.com/${CONFIG.tenantId}/oauth2/v2.0/authorize?${params}`;
+// PKCE helpers
+function base64urlencode(str){
+  return btoa(String.fromCharCode(...new Uint8Array(str)))
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+}
+async function generateCodeVerifier(){
+  const array = new Uint8Array(32);
+  crypto.getRandomValues(array);
+  return base64urlencode(array);
+}
+async function generateCodeChallenge(verifier){
+  const encoder = new TextEncoder();
+  const data = encoder.encode(verifier);
+  const digest = await crypto.subtle.digest('SHA-256', data);
+  return base64urlencode(digest);
 }
 
-function login(){
-  window.location.href = getAuthUrl();
+async function login(){
+  const verifier = await generateCodeVerifier();
+  const challenge = await generateCodeChallenge(verifier);
+  sessionStorage.setItem('pkce_verifier', verifier);
+  const params = new URLSearchParams({
+    client_id: CLIENT_ID,
+    response_type: 'code',
+    redirect_uri: REDIRECT_URI,
+    scope: 'https://graph.microsoft.com/Sites.ReadWrite.All User.Read openid profile',
+    code_challenge: challenge,
+    code_challenge_method: 'S256',
+    response_mode: 'query',
+  });
+  window.location.href = `https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/authorize?${params}`;
+}
+
+async function exchangeCode(code){
+  const verifier = sessionStorage.getItem('pkce_verifier');
+  const body = new URLSearchParams({
+    client_id: CLIENT_ID,
+    grant_type: 'authorization_code',
+    code,
+    redirect_uri: REDIRECT_URI,
+    code_verifier: verifier,
+  });
+  const r = await fetch(`https://login.microsoftonline.com/${TENANT_ID}/oauth2/v2.0/token`, {
+    method: 'POST',
+    headers: {'Content-Type':'application/x-www-form-urlencoded'},
+    body,
+  });
+  const data = await r.json();
+  return data.access_token;
 }
 
 function logout(){
   accessToken = null;
-  currentUser = null;
   sessionStorage.clear();
   document.getElementById('login-view').classList.remove('hidden');
   document.getElementById('main-view').classList.add('hidden');
   document.getElementById('user-bar').classList.add('hidden');
   document.getElementById('total-count').textContent = '—';
   document.getElementById('checkin-count').textContent = '—';
+  window.location.href = REDIRECT_URI;
 }
 
-function parseTokenFromHash(){
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  return params.get('access_token');
-}
-
-async function getUserInfo(token){
-  const r = await fetch('https://graph.microsoft.com/v1.0/me', {
-    headers: { Authorization: 'Bearer ' + token }
-  });
+async function getUserInfo(){
+  const r = await fetch('https://graph.microsoft.com/v1.0/me', {headers:{Authorization:'Bearer '+accessToken}});
   return r.json();
 }
 
 async function init(){
-  const token = parseTokenFromHash() || sessionStorage.getItem('at');
-  if(token){
-    window.location.hash = '';
-    sessionStorage.setItem('at', token);
-    accessToken = token;
+  const params = new URLSearchParams(window.location.search);
+  const code = params.get('code');
+  const token = sessionStorage.getItem('at');
+  if(code){
+    history.replaceState({}, '', REDIRECT_URI);
     try {
-      const user = await getUserInfo(token);
-      currentUser = user;
-      const initials = (user.givenName?.[0]||'') + (user.surname?.[0]||'') || user.displayName?.[0] || '?';
-      document.getElementById('user-avatar').textContent = initials.toUpperCase();
-      document.getElementById('user-name').textContent = user.displayName || user.userPrincipalName;
-      document.getElementById('user-bar').classList.remove('hidden');
-      document.getElementById('login-view').classList.add('hidden');
-      document.getElementById('main-view').classList.remove('hidden');
-      await loadStats();
-    } catch(e){
-      showToast('Anmeldung fehlgeschlagen. Bitte erneut versuchen.', 'error');
-      logout();
-    }
+      const t = await exchangeCode(code);
+      if(t){ sessionStorage.setItem('at', t); accessToken = t; await afterLogin(); }
+      else { showToast('Anmeldung fehlgeschlagen', 'error'); }
+    } catch(e){ showToast('Fehler bei der Anmeldung', 'error'); }
+  } else if(token){
+    accessToken = token;
+    await afterLogin();
   }
 }
 
-// ============================================================
-// SHAREPOINT / GRAPH API
-// ============================================================
+async function afterLogin(){
+  try {
+    const user = await getUserInfo();
+    const initials = ((user.givenName||'')[0]||(user.displayName||'')[0]||'?').toUpperCase() + ((user.surname||'')[0]||'').toUpperCase();
+    document.getElementById('user-avatar').textContent = initials;
+    document.getElementById('user-name').textContent = user.displayName || user.userPrincipalName;
+    document.getElementById('user-bar').classList.remove('hidden');
+    document.getElementById('login-view').classList.add('hidden');
+    document.getElementById('main-view').classList.remove('hidden');
+    await loadStats();
+  } catch(e){ showToast('Sitzung abgelaufen – bitte neu anmelden', 'error'); sessionStorage.clear(); }
+}
+
 async function getSiteId(){
-  const hostname = 'aufrechtnrw.sharepoint.com';
-  const sitePath = '/sites/AUFRECHTe.V';
-  const r = await fetch(
-    `https://graph.microsoft.com/v1.0/sites/${hostname}:${sitePath}`,
-    { headers: { Authorization: 'Bearer ' + accessToken } }
-  );
-  const data = await r.json();
-  return data.id;
+  if(_siteId) return _siteId;
+  const r = await fetch(`https://graph.microsoft.com/v1.0/sites/${SITE_HOSTNAME}:${SITE_PATH}`, {headers:{Authorization:'Bearer '+accessToken}});
+  const d = await r.json();
+  _siteId = d.id;
+  return _siteId;
 }
 
-async function getListId(siteId){
-  const encoded = encodeURIComponent(CONFIG.listName);
-  const r = await fetch(
-    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists?$filter=displayName eq '${encoded}'`,
-    { headers: { Authorization: 'Bearer ' + accessToken } }
-  );
-  const data = await r.json();
-  return data.value?.[0]?.id;
-}
-
-let _siteId = null;
-let _listId = null;
-
-async function getIds(){
-  if(!_siteId) _siteId = await getSiteId();
-  if(!_listId) _listId = await getListId(_siteId);
-  return { siteId: _siteId, listId: _listId };
+async function getListId(){
+  if(_listId) return _listId;
+  const siteId = await getSiteId();
+  const r = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists`, {headers:{Authorization:'Bearer '+accessToken}});
+  const d = await r.json();
+  const list = d.value?.find(l => l.displayName === LIST_NAME);
+  _listId = list?.id;
+  return _listId;
 }
 
 async function loadStats(){
   try {
-    const { siteId, listId } = await getIds();
-    const r = await fetch(
-      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$select=id&$top=999`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const all = await r.json();
-    const total = all.value?.length || 0;
-
-    const r2 = await fetch(
-      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields($select=Check_x002d_in)&$filter=fields/Check_x002d_in eq 1&$select=id&$top=999`,
-      { headers: { Authorization: 'Bearer ' + accessToken } }
-    );
-    const checked = await r2.json();
-    const checkedCount = checked.value?.length || 0;
-
-    document.getElementById('total-count').textContent = total;
-    document.getElementById('checkin-count').textContent = checkedCount;
-  } catch(e){
-    console.warn('Stats konnte nicht geladen werden:', e);
-  }
+    const siteId = await getSiteId();
+    const listId = await getListId();
+    const r1 = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$select=id&$top=999`, {headers:{Authorization:'Bearer '+accessToken}});
+    const d1 = await r1.json();
+    document.getElementById('total-count').textContent = d1.value?.length || 0;
+    const r2 = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields($select=Check_x002d_in)&$top=999`, {headers:{Authorization:'Bearer '+accessToken}});
+    const d2 = await r2.json();
+    const checked = d2.value?.filter(i => i.fields?.['Check_x002d_in'] === true).length || 0;
+    document.getElementById('checkin-count').textContent = checked;
+  } catch(e){ console.warn('Stats error', e); }
 }
 
 async function findByQRID(qrid){
-  const { siteId, listId } = await getIds();
+  const siteId = await getSiteId();
+  const listId = await getListId();
   const encoded = encodeURIComponent(qrid);
-  const r = await fetch(
-    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=fields/QR_x002d_Code_x0020_ID eq '${encoded}'`,
-    { headers: { Authorization: 'Bearer ' + accessToken } }
-  );
-  const data = await r.json();
-  return data.value?.[0] || null;
+  const r = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=fields/QR_x002d_Code_x0020_ID eq '${encoded}'`, {headers:{Authorization:'Bearer '+accessToken}});
+  const d = await r.json();
+  return d.value?.[0] || null;
 }
 
 async function patchCheckin(itemId){
-  const { siteId, listId } = await getIds();
-  const now = new Date().toISOString();
-  const r = await fetch(
-    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
-    {
-      method: 'PATCH',
-      headers: {
-        Authorization: 'Bearer ' + accessToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        'Check_x002d_in': true,
-        'Check_x002d_In_x0020_Zeit': now,
-      }),
-    }
-  );
+  const siteId = await getSiteId();
+  const listId = await getListId();
+  const r = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`, {
+    method:'PATCH',
+    headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+    body: JSON.stringify({'Check_x002d_in': true, 'Check_x002d_In_x0020_Zeit': new Date().toISOString()}),
+  });
   return r.ok;
 }
 
-// ============================================================
-// UI
-// ============================================================
 function showToast(msg, type=''){
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show ' + type;
-  setTimeout(() => t.className = 'toast', 3000);
+  t.textContent = msg; t.className = 'toast show '+type;
+  setTimeout(()=>t.className='toast', 3000);
 }
 
-function showLoading(msg){
-  document.getElementById('scan-view').classList.add('hidden');
-  document.getElementById('result-view').classList.add('hidden');
-  document.getElementById('loading-view').classList.remove('hidden');
-  document.getElementById('loading-msg').textContent = msg || 'Wird geladen...';
-}
-
-function hideLoading(){
-  document.getElementById('loading-view').classList.add('hidden');
-}
-
-function showScanView(){
-  document.getElementById('scan-view').classList.remove('hidden');
-  document.getElementById('result-view').classList.add('hidden');
-  document.getElementById('loading-view').classList.add('hidden');
-}
-
-function showResultView(){
-  document.getElementById('scan-view').classList.add('hidden');
-  document.getElementById('result-view').classList.remove('hidden');
-  document.getElementById('loading-view').classList.add('hidden');
-}
-
-function resetView(){
-  stopCamera();
-  currentItem = null;
-  document.getElementById('qr-input').value = '';
-  showScanView();
-}
+function showLoading(msg){ document.getElementById('scan-view').classList.add('hidden'); document.getElementById('result-view').classList.add('hidden'); document.getElementById('loading-view').classList.remove('hidden'); document.getElementById('loading-msg').textContent = msg||'Wird geladen...'; }
+function hideLoading(){ document.getElementById('loading-view').classList.add('hidden'); }
+function showScanView(){ document.getElementById('scan-view').classList.remove('hidden'); document.getElementById('result-view').classList.add('hidden'); document.getElementById('loading-view').classList.add('hidden'); }
+function showResultView(){ document.getElementById('scan-view').classList.add('hidden'); document.getElementById('result-view').classList.remove('hidden'); document.getElementById('loading-view').classList.add('hidden'); }
 
 async function processQRID(qrid){
   if(!qrid) return;
+  stopCamera();
   showLoading('Teilnehmer wird gesucht...');
   try {
     const item = await findByQRID(qrid.trim());
-    hideLoading();
-    showResultView();
+    hideLoading(); showResultView();
     if(!item){
-      document.getElementById('not-found-box').classList.remove('hidden');
+      document.getElementById('not-found').classList.remove('hidden');
       document.getElementById('found-card').classList.add('hidden');
-      document.getElementById('not-found-msg').textContent = 'Kein Eintrag für QR-ID "' + qrid + '" gefunden.';
+      document.getElementById('not-found-msg').textContent = 'Kein Eintrag für "'+qrid+'" gefunden.';
       return;
     }
-    document.getElementById('not-found-box').classList.add('hidden');
+    document.getElementById('not-found').classList.add('hidden');
     document.getElementById('found-card').classList.remove('hidden');
     currentItem = item;
-
     const f = item.fields;
-    const name = f.Title || (f.Vorname + ' ' + f.Nachname) || '—';
+    const name = f.Title || ((f.Vorname||'') + ' ' + (f.Nachname||'')).trim() || '—';
     const initials = name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
-
     document.getElementById('res-avatar').textContent = initials;
     document.getElementById('res-name').textContent = name;
     document.getElementById('res-org').textContent = f.Organisation || '—';
-    document.getElementById('res-email').textContent = f.E_x002d_Mail || f.Email || '—';
+    document.getElementById('res-email').textContent = f['E_x002d_Mail'] || f.Email || '—';
     document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || qrid;
-
-    const statusBadge = document.getElementById('res-status');
-    statusBadge.textContent = f.Status || '—';
-    statusBadge.className = 'badge ' + (f.Status === 'Bestätigt' ? 'badge-green' : 'badge-amber');
-
+    const sb = document.getElementById('res-status');
+    sb.textContent = f.Status || '—';
+    sb.className = 'badge '+(f.Status==='Bestätigt'?'badge-green':'badge-amber');
+    const checked = f['Check_x002d_in'] === true;
     const btn = document.getElementById('checkin-btn');
     const alreadyBox = document.getElementById('already-box');
-    const checkedIn = f['Check_x002d_in'] === true || f['Check_x002d_in'] === 1;
-
-    if(checkedIn){
+    if(checked){
       alreadyBox.classList.remove('hidden');
-      const time = f['Check_x002d_In_x0020_Zeit'];
-      document.getElementById('already-time').textContent = time ? 'Eingecheckt am ' + new Date(time).toLocaleString('de-DE') : '';
-      btn.className = 'checkin-btn disabled';
-      btn.textContent = 'Bereits eingecheckt';
-      btn.onclick = null;
+      const t = f['Check_x002d_In_x0020_Zeit'];
+      document.getElementById('already-time').textContent = t ? 'Eingecheckt: '+new Date(t).toLocaleString('de-DE') : '';
+      btn.disabled = true; btn.textContent = 'Bereits eingecheckt'; btn.className = 'btn-checkin';
     } else {
       alreadyBox.classList.add('hidden');
-      btn.className = 'checkin-btn ready';
-      btn.textContent = 'Jetzt einchecken';
-      btn.onclick = doCheckin;
+      btn.disabled = false; btn.textContent = 'Jetzt einchecken'; btn.className = 'btn-checkin';
     }
-  } catch(e){
-    hideLoading();
-    showScanView();
-    showToast('Fehler beim Suchen. Bitte erneut versuchen.', 'error');
-    console.error(e);
-  }
+  } catch(e){ hideLoading(); showScanView(); showToast('Fehler beim Suchen', 'error'); }
 }
 
 async function searchManual(){
@@ -535,112 +420,100 @@ async function searchManual(){
 async function doCheckin(){
   if(!currentItem) return;
   const btn = document.getElementById('checkin-btn');
-  btn.className = 'checkin-btn disabled';
-  btn.textContent = 'Wird gespeichert...';
+  btn.disabled = true; btn.textContent = 'Wird gespeichert...';
   try {
     const ok = await patchCheckin(currentItem.id);
     if(ok){
-      btn.className = 'checkin-btn done';
-      btn.textContent = 'Erfolgreich eingecheckt ✓';
-      btn.onclick = null;
+      btn.className = 'btn-checkin done'; btn.textContent = 'Erfolgreich eingecheckt ✓';
       document.getElementById('already-box').classList.remove('hidden');
-      document.getElementById('already-time').textContent = 'Gerade eingecheckt · ' + new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) + ' Uhr';
+      document.getElementById('already-time').textContent = 'Gerade eingecheckt · '+new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
       showToast('Check-in erfolgreich!', 'success');
       await loadStats();
-    } else {
-      btn.className = 'checkin-btn ready';
-      btn.textContent = 'Jetzt einchecken';
-      showToast('Fehler beim Speichern. Bitte erneut versuchen.', 'error');
-    }
-  } catch(e){
-    btn.className = 'checkin-btn ready';
-    btn.textContent = 'Jetzt einchecken';
-    showToast('Netzwerkfehler. Bitte erneut versuchen.', 'error');
-  }
+    } else { btn.disabled=false; btn.textContent='Jetzt einchecken'; showToast('Fehler beim Speichern', 'error'); }
+  } catch(e){ btn.disabled=false; btn.textContent='Jetzt einchecken'; showToast('Netzwerkfehler', 'error'); }
 }
 
-// ============================================================
-// KAMERA / QR-SCANNER (jsQR)
-// ============================================================
-function loadJsQR(){
-  return new Promise((resolve,reject)=>{
-    if(window.jsQR){ resolve(); return; }
-    const s = document.createElement('script');
-    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js';
-    s.onload = resolve;
-    s.onerror = reject;
-    document.head.appendChild(s);
+function resetView(){ stopCamera(); currentItem=null; document.getElementById('qr-input').value=''; showScanView(); }
+
+async function loadJsQR(){
+  return new Promise((res,rej)=>{
+    if(window.jsQR){res();return;}
+    const s=document.createElement('script');
+    s.src='https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js';
+    s.onload=res; s.onerror=rej; document.head.appendChild(s);
   });
 }
 
 async function toggleCamera(){
-  if(cameraStream){ stopCamera(); return; }
+  if(cameraStream){stopCamera();return;}
   await startCamera();
 }
 
 async function startCamera(){
   try {
     await loadJsQR();
-    const stream = await navigator.mediaDevices.getUserMedia({
-      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} }
-    });
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'environment'}});
     cameraStream = stream;
     const video = document.getElementById('video');
-    video.srcObject = stream;
-    video.classList.remove('hidden');
-    document.getElementById('scan-overlay').style.opacity = '0.6';
-    document.getElementById('camera-btn').textContent = 'Kamera stoppen';
-    document.getElementById('camera-btn').classList.add('active');
-    document.getElementById('scan-hint').textContent = 'QR-Code in Rahmen halten';
+    video.srcObject = stream; video.classList.remove('hidden');
+    document.getElementById('scan-hint').style.display='none';
+    document.getElementById('cam-btn').textContent='Kamera stoppen';
+    document.getElementById('cam-btn').classList.add('off');
     scanning = true;
     requestAnimationFrame(scanFrame);
-  } catch(e){
-    showToast('Kamera nicht verfügbar. Bitte manuell eingeben.', 'error');
-  }
+  } catch(e){ showToast('Kamera nicht verfügbar', 'error'); }
 }
 
 function stopCamera(){
   scanning = false;
-  if(cameraStream){
-    cameraStream.getTracks().forEach(t=>t.stop());
-    cameraStream = null;
-  }
+  if(cameraStream){cameraStream.getTracks().forEach(t=>t.stop());cameraStream=null;}
   const video = document.getElementById('video');
-  video.srcObject = null;
-  video.classList.add('hidden');
-  document.getElementById('scan-overlay').style.opacity = '1';
-  document.getElementById('camera-btn').textContent = 'Kamera starten';
-  document.getElementById('camera-btn').classList.remove('active');
-  document.getElementById('scan-hint').textContent = 'Tippen zum Scannen';
+  video.srcObject=null; video.classList.add('hidden');
+  document.getElementById('scan-hint').style.display='';
+  document.getElementById('cam-btn').textContent='Kamera starten';
+  document.getElementById('cam-btn').classList.remove('off');
 }
 
 function scanFrame(){
   if(!scanning) return;
   const video = document.getElementById('video');
-  const canvas = document.getElementById('canvas');
-  if(video.readyState === video.HAVE_ENOUGH_DATA){
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const code = window.jsQR && jsQR(imageData.data, imageData.width, imageData.height, {inversionAttempts:'dontInvert'});
-    if(code && code.data){
-      stopCamera();
-      processQRID(code.data);
-      return;
-    }
+  if(video.readyState===video.HAVE_ENOUGH_DATA){
+    const canvas = document.createElement('canvas');
+    canvas.width=video.videoWidth; canvas.height=video.videoHeight;
+    canvas.getContext('2d').drawImage(video,0,0);
+    const img = canvas.getContext('2d').getImageData(0,0,canvas.width,canvas.height);
+    const code = window.jsQR && jsQR(img.data,img.width,img.height,{inversionAttempts:'dontInvert'});
+    if(code&&code.data){ processQRID(code.data); return; }
   }
   requestAnimationFrame(scanFrame);
 }
 
-// Enter-Taste im Input
-document.getElementById('qr-input')?.addEventListener('keydown', e => {
-  if(e.key === 'Enter') searchManual();
+document.getElementById('qr-input')?.addEventListener('keydown', e=>{ if(e.key==='Enter') searchManual(); });
+init();
+</script>
+
+<script>
+// PWA Install
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('install-btn').classList.remove('hidden');
 });
 
-// Start
-init();
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('install-btn');
+  if(btn) {
+    btn.addEventListener('click', async () => {
+      if(deferredPrompt) {
+        deferredPrompt.prompt();
+        const result = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        btn.classList.add('hidden');
+      }
+    });
+  }
+});
 </script>
 </body>
 </html>
