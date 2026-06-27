@@ -10428,6 +10428,7 @@ async function afterLogin(){
     document.getElementById('main-view').classList.remove('hidden');
     await loadStats();
     loadAllItems(); // Preload for QR scan
+    startLivePolling(); // Live counter updates
   } catch(e){ showToast('Sitzung abgelaufen – bitte neu anmelden', 'error'); localStorage.removeItem('at'); sessionStorage.clear(); }
 }
 
@@ -10497,7 +10498,7 @@ async function patchCheckin(itemId){
       method: 'PATCH',
       headers: {Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json'},
       body: JSON.stringify({
-        'Check_x002d_IN': 1,
+        'Check_x002d_IN': true,
         'Check_x002d_IN_x002d_Zeit': new Date().toISOString()
       }),
     }
@@ -10811,6 +10812,34 @@ async function checkCameraPermission(){
 }
 
 document.getElementById('qr-input')?.addEventListener('keydown', e=>{ if(e.key==='Enter') searchManual(); });
+
+// Live polling for stats
+let pollingInterval = null;
+
+function startLivePolling(){
+  // Poll every 30 seconds
+  if(pollingInterval) clearInterval(pollingInterval);
+  pollingInterval = setInterval(async () => {
+    if(!accessToken) return;
+    try {
+      await loadStats();
+    } catch(e){ console.log('Polling error:', e); }
+  }, 30000);
+}
+
+function stopLivePolling(){
+  if(pollingInterval){ clearInterval(pollingInterval); pollingInterval = null; }
+}
+
+// Pause polling when app is hidden, resume when visible
+document.addEventListener('visibilitychange', () => {
+  if(document.hidden){
+    stopLivePolling();
+  } else if(accessToken){
+    loadStats(); // Immediate refresh when app comes to foreground
+    startLivePolling();
+  }
+});
 
 // Pull-to-refresh
 let ptStartY = 0;
