@@ -43,7 +43,7 @@ html,body{height:100%;font-family:var(--font);background:var(--mist);-webkit-fon
 .user-name{color:rgba(255,255,255,0.7);font-size:12px;font-weight:600}
 .logout-btn{color:rgba(255,255,255,0.4);font-size:11px;background:none;border:none;font-family:var(--font);cursor:pointer;font-weight:600}
 .body{flex:1;padding:16px;overflow-y:auto}
-.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
 .stat{background:var(--white);border-radius:12px;padding:14px;text-align:center;border:1.5px solid var(--mist-300)}
 .stat-num{font-size:28px;font-weight:800;color:var(--slate)}
 .stat-num.pink{color:var(--pink)}
@@ -52,10 +52,6 @@ html,body{height:100%;font-family:var(--font);background:var(--mist);-webkit-fon
 .login-card h2{color:#fff;font-size:17px;font-weight:800;margin-bottom:8px}
 .login-card p{color:var(--slate-400);font-size:13px;font-weight:500;margin-bottom:18px;line-height:1.5}
 .btn-ms{width:100%;background:var(--pink);color:#fff;border:none;border-radius:999px;padding:15px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
-.stats-row{display:flex;align-items:center;gap:8px;margin-bottom:16px}
-.stats-row .stats{flex:1;margin-bottom:0}
-.refresh-btn{background:var(--slate);color:#fff;border:none;border-radius:50%;width:44px;height:44px;font-size:22px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:transform 0.3s}
-.refresh-btn.spinning{animation:spin 0.7s linear infinite}
 .scan-box{background:var(--slate);border-radius:16px;padding:16px;margin-bottom:14px}
 .scan-lbl{color:var(--slate-400);font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:10px}
 .scan-area{background:rgba(0,0,0,0.2);border-radius:10px;height:200px;display:flex;align-items:center;justify-content:center;border:1.5px dashed rgba(255,255,255,0.12);position:relative;overflow:hidden;cursor:pointer}
@@ -10243,12 +10239,9 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
   </div>
 
   <div class="body">
-    <div class="stats-row">
-      <div class="stats">
-        <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-lbl">Angemeldet</div></div>
-        <div class="stat"><div class="stat-num pink" id="checkin-count">—</div><div class="stat-lbl">Eingecheckt</div></div>
-      </div>
-      <button class="refresh-btn" id="refresh-btn" onclick="refreshData()" title="Aktualisieren">↻</button>
+    <div class="stats">
+      <div class="stat"><div class="stat-num" id="total-count">—</div><div class="stat-lbl">Angemeldet</div></div>
+      <div class="stat"><div class="stat-num pink" id="checkin-count">—</div><div class="stat-lbl">Eingecheckt</div></div>
     </div>
 
     <div id="login-view">
