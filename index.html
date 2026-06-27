@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>AUFRECHT Check-In</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/6.0.1/signalr.min.js"></script>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Dosis:wght@500;600;700;800&display=swap');
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --pink:#ff3a94;--pink-600:#e91e7d;
+  --amber:#ffbd03;--cyan:#57efff;--lime:#a6fd29;
+  --slate:#284048;--slate-800:#1d3036;--slate-700:#34505a;
+  --slate-500:#5d7079;--slate-400:#8a99a0;--slate-300:#c2ccd0;
+  --mist:#e8f1f5;--mist-200:#d7e6ed;--mist-300:#c3dbe6;
+  --green:#28a745;--white:#fff;
+  --font:'Dosis',system-ui,sans-serif;
+  --radius-pill:999px;--radius-lg:20px;--radius-md:14px;
+}
+html,body{height:100%;font-family:var(--font);background:var(--mist);-webkit-font-smoothing:antialiased}
+.app{max-width:420px;margin:0 auto;min-height:100vh;background:var(--white);display:flex;flex-direction:column;position:relative}
+
+/* HEADER */
+.header{background:var(--slate);padding:20px 24px 18px;flex-shrink:0}
+.header-top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.header-logo{display:flex;gap:3px}
+.header-logo span{width:8px;height:16px;border-radius:2px;transform:skewX(-12deg)}
+.header-logo span:nth-child(1){background:var(--pink)}
+.header-logo span:nth-child(2){background:var(--amber)}
+.header-logo span:nth-child(3){background:var(--cyan)}
+.header-logo span:nth-child(4){background:var(--lime)}
+.header-brand{color:rgba(255,255,255,0.5);font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
+.header h1{color:var(--white);font-size:19px;font-weight:800;line-height:1.2}
+.header p{color:var(--slate-400);font-size:13px;font-weight:500;margin-top:2px}
+.header-signet{height:3px;margin-top:16px;border-radius:2px;background:linear-gradient(90deg,var(--pink) 0%,var(--pink) 25%,var(--amber) 25%,var(--amber) 50%,var(--cyan) 50%,var(--cyan) 75%,var(--lime) 75%)}
+
+/* BODY */
+.body{flex:1;padding:20px;overflow-y:auto}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:20px}
+.stat{background:var(--mist);border-radius:var(--radius-md);padding:14px;text-align:center}
+.stat-num{font-size:30px;font-weight:800;color:var(--slate);line-height:1}
+.stat-label{font-size:11px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.07em;margin-top:4px}
+.stat-pink .stat-num{color:var(--pink)}
+
+/* LOGIN */
+.login-card{background:var(--slate);border-radius:var(--radius-lg);padding:28px 24px;text-align:center;margin-bottom:20px}
+.login-card h2{color:var(--white);font-size:18px;font-weight:800;margin-bottom:8px}
+.login-card p{color:var(--slate-400);font-size:14px;font-weight:500;margin-bottom:20px;line-height:1.5}
+.login-btn{width:100%;background:var(--pink);color:var(--white);border:none;border-radius:var(--radius-pill);padding:16px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:10px}
+.login-btn:hover{background:var(--pink-600);transform:translateY(-1px)}
+.login-btn svg{flex-shrink:0}
+
+/* SCAN AREA */
+.scan-area{background:var(--slate);border-radius:var(--radius-lg);padding:20px;margin-bottom:16px}
+.scan-label{color:var(--slate-400);font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;margin-bottom:12px}
+.scan-box{width:100%;aspect-ratio:1;border:2px dashed rgba(255,255,255,0.15);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;background:rgba(0,0,0,0.2)}
+.scan-box:hover{border-color:var(--pink)}
+.scan-box video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px}
+.scan-box canvas{position:absolute;inset:0;width:100%;height:100%;opacity:0}
+.scan-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:8px;pointer-events:none}
+.scan-frame{width:160px;height:160px;border-radius:12px;border:2px solid var(--pink);position:relative}
+.scan-frame::before,.scan-frame::after{content:'';position:absolute;width:20px;height:20px;border-color:var(--white);border-style:solid}
+.scan-frame::before{top:-2px;left:-2px;border-width:3px 0 0 3px;border-radius:4px 0 0 0}
+.scan-frame::after{bottom:-2px;right:-2px;border-width:0 3px 3px 0;border-radius:0 0 4px 0}
+.scan-hint{color:rgba(255,255,255,0.5);font-size:13px;font-weight:600}
+.scan-active .scan-hint{color:var(--pink)}
+.camera-btn{width:100%;background:var(--pink);color:var(--white);border:none;border-radius:var(--radius-pill);padding:14px;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;margin-top:12px;transition:all 0.15s}
+.camera-btn:hover{background:var(--pink-600)}
+.camera-btn.active{background:var(--slate-700)}
+.divider{display:flex;align-items:center;gap:10px;margin:14px 0;color:rgba(255,255,255,0.25);font-size:12px;font-weight:600}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:rgba(255,255,255,0.1)}
+.manual-input input{width:100%;background:rgba(255,255,255,0.07);border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px 16px;color:var(--white);font-family:var(--font);font-size:15px;font-weight:600;outline:none;transition:all 0.15s}
+.manual-input input::placeholder{color:rgba(255,255,255,0.25)}
+.manual-input input:focus{border-color:var(--pink);background:rgba(255,58,148,0.07)}
+.search-btn{width:100%;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);border:1.5px solid rgba(255,255,255,0.12);border-radius:10px;padding:12px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;margin-top:8px;transition:all 0.15s}
+.search-btn:hover{background:rgba(255,255,255,0.12)}
+
+/* RESULT */
+.result-card{background:var(--white);border:1.5px solid var(--mist-200);border-radius:var(--radius-lg);overflow:hidden;margin-bottom:14px}
+.result-head{background:var(--mist);padding:18px 20px}
+.result-avatar{width:44px;height:44px;border-radius:50%;background:var(--slate);color:var(--white);font-size:16px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:10px}
+.result-name{font-size:21px;font-weight:800;color:var(--slate);line-height:1.2}
+.result-org{font-size:13px;font-weight:600;color:var(--slate-500);margin-top:3px}
+.result-body{padding:0 20px}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--mist)}
+.result-row:last-child{border-bottom:none}
+.result-key{font-size:12px;font-weight:700;color:var(--slate-400);text-transform:uppercase;letter-spacing:0.06em}
+.result-val{font-size:14px;font-weight:700;color:var(--slate)}
+.badge{display:inline-block;padding:4px 12px;border-radius:var(--radius-pill);font-size:12px;font-weight:700}
+.badge-green{background:#e8f5e9;color:#1b5e20}
+.badge-amber{background:#fff8e1;color:#e65100}
+.already-box{background:#fce4ec;border-radius:10px;padding:12px 16px;margin-bottom:12px;border-left:3px solid var(--pink)}
+.already-box p{color:#880e4f;font-size:14px;font-weight:700}
+.already-box span{color:#c2185b;font-size:12px;font-weight:500}
+.checkin-btn{width:100%;border:none;border-radius:var(--radius-pill);padding:18px;font-family:var(--font);font-size:18px;font-weight:800;cursor:pointer;transition:all 0.2s;margin-bottom:10px;display:flex;align-items:center;justify-content:center;gap:8px}
+.checkin-btn.ready{background:var(--pink);color:var(--white)}
+.checkin-btn.ready:hover{background:var(--pink-600);transform:translateY(-2px)}
+.checkin-btn.done{background:var(--green);color:var(--white);cursor:default}
+.checkin-btn.disabled{background:var(--mist-200);color:var(--slate-400);cursor:not-allowed}
+.reset-btn{width:100%;background:transparent;color:var(--slate-500);border:1.5px solid var(--mist-200);border-radius:var(--radius-pill);padding:14px;font-family:var(--font);font-size:15px;font-weight:700;cursor:pointer;transition:all 0.15s}
+.reset-btn:hover{border-color:var(--slate-300);color:var(--slate)}
+.not-found-box{text-align:center;padding:28px 20px;background:var(--mist);border-radius:var(--radius-md);margin-bottom:16px}
+.not-found-box h3{color:var(--slate);font-size:18px;font-weight:800;margin-bottom:6px}
+.not-found-box p{color:var(--slate-500);font-size:14px;font-weight:500}
+
+/* LOADING */
+.loading{display:flex;align-items:center;justify-content:center;padding:40px;flex-direction:column;gap:12px}
+.spinner{width:32px;height:32px;border:3px solid var(--mist-200);border-top-color:var(--pink);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading p{color:var(--slate-500);font-size:14px;font-weight:600}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--slate);color:var(--white);padding:12px 24px;border-radius:var(--radius-pill);font-size:14px;font-weight:700;transition:transform 0.3s;z-index:100;white-space:nowrap}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.toast.success{background:var(--green)}
+.toast.error{background:#c62828}
+
+/* USER INFO */
+.user-bar{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:rgba(255,255,255,0.05);border-bottom:1px solid rgba(255,255,255,0.07)}
+.user-info{display:flex;align-items:center;gap:8px}
+.user-avatar{width:28px;height:28px;border-radius:50%;background:var(--pink);color:var(--white);font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center}
+.user-name{color:rgba(255,255,255,0.7);font-size:12px;font-weight:600}
+.logout-btn{color:rgba(255,255,255,0.4);font-size:11px;font-weight:600;cursor:pointer;background:none;border:none;font-family:var(--font);padding:4px 8px;border-radius:6px;transition:all 0.15s}
+.logout-btn:hover{color:var(--white);background:rgba(255,255,255,0.1)}
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="header">
+    <div class="header-top">
+      <div class="header-logo">
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <span class="header-brand">AUFRECHT e.V.</span>
+    </div>
+    <div id="user-bar" class="user-bar hidden">
+      <div class="user-info">
+        <div class="user-avatar" id="user-avatar">?</div>
+        <span class="user-name" id="user-name">Nicht angemeldet</span>
+      </div>
+      <button class="logout-btn" onclick="logout()">Abmelden</button>
+    </div>
+    <h1>Düsseldorfer Konferenz 2026</h1>
+    <p>Check-In · 16. Oktober 2026 · Haus der Universität</p>
+    <div class="header-signet"></div>
+  </div>
+
+  <div class="body">
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-num" id="total-count">—</div>
+        <div class="stat-label">Angemeldet</div>
+      </div>
+      <div class="stat stat-pink">
+        <div class="stat-num" id="checkin-count">—</div>
+        <div class="stat-label">Eingecheckt</div>
+      </div>
+    </div>
+
+    <!-- LOGIN VIEW -->
+    <div id="login-view">
+      <div class="login-card">
+        <h2>Anmeldung erforderlich</h2>
+        <p>Bitte melde dich mit deinem AUFRECHT Microsoft-Konto an um auf die Teilnehmerliste zuzugreifen.</p>
+        <button class="login-btn" onclick="login()">
+          <svg width="20" height="20" viewBox="0 0 21 21" fill="none">
+            <path d="M10 0H0V10H10V0Z" fill="#F25022"/>
+            <path d="M21 0H11V10H21V0Z" fill="#7FBA00"/>
+            <path d="M10 11H0V21H10V11Z" fill="#00A4EF"/>
+            <path d="M21 11H11V21H21V11Z" fill="#FFB900"/>
+          </svg>
+          Mit Microsoft anmelden
+        </button>
+      </div>
+    </div>
+
+    <!-- MAIN VIEW -->
+    <div id="main-view" class="hidden">
+      <!-- SCAN -->
+      <div id="scan-view">
+        <div class="scan-area">
+          <div class="scan-label">QR-Code scannen</div>
+          <div class="scan-box" id="scan-box" onclick="toggleCamera()">
+            <video id="video" autoplay playsinline muted class="hidden"></video>
+            <canvas id="canvas" class="hidden"></canvas>
+            <div class="scan-overlay" id="scan-overlay">
+              <div class="scan-frame"></div>
+              <p class="scan-hint" id="scan-hint">Tippen zum Scannen</p>
+            </div>
+          </div>
+          <button class="camera-btn" id="camera-btn" onclick="toggleCamera()">Kamera starten</button>
+          <div class="divider">oder</div>
+          <div class="manual-input">
+            <input type="text" id="qr-input" placeholder="QR-Code ID eingeben (z.B. AUFRECHT-2026-1)" />
+            <button class="search-btn" onclick="searchManual()">Suchen</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LOADING -->
+      <div id="loading-view" class="hidden">
+        <div class="loading">
+          <div class="spinner"></div>
+          <p id="loading-msg">Wird geladen...</p>
+        </div>
+      </div>
+
+      <!-- RESULT VIEW -->
+      <div id="result-view" class="hidden">
+        <div id="not-found-box" class="not-found-box hidden">
+          <h3>Nicht gefunden</h3>
+          <p id="not-found-msg"></p>
+        </div>
+
+        <div id="found-card" class="hidden">
+          <div class="result-card">
+            <div class="result-head">
+              <div class="result-avatar" id="res-avatar"></div>
+              <div class="result-name" id="res-name"></div>
+              <div class="result-org" id="res-org"></div>
+            </div>
+            <div class="result-body">
+              <div class="result-row">
+                <span class="result-key">Status</span>
+                <span class="result-val"><span class="badge" id="res-status"></span></span>
+              </div>
+              <div class="result-row">
+                <span class="result-key">E-Mail</span>
+                <span class="result-val" id="res-email" style="font-size:13px;word-break:break-all"></span>
+              </div>
+              <div class="result-row">
+                <span class="result-key">QR-ID</span>
+                <span class="result-val" id="res-qrid" style="font-size:13px;color:var(--slate-500)"></span>
+              </div>
+            </div>
+          </div>
+
+          <div id="already-box" class="already-box hidden">
+            <p>Bereits eingecheckt</p>
+            <span id="already-time"></span>
+          </div>
+
+          <button class="checkin-btn ready" id="checkin-btn" onclick="doCheckin()">Jetzt einchecken</button>
+        </div>
+
+        <button class="reset-btn" onclick="resetView()">← Neuen Code scannen</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============================================================
+// KONFIGURATION – hier deine Werte eintragen
+// ============================================================
+const CONFIG = {
+  clientId: 'f9c2eb46-5654-4446-a583-3e2f5d50f6a4',          // Azure App-Registrierung Client-ID
+  tenantId: '8e0704d0-3f9e-46dc-b762-d37ce1e0beb0',           // Azure Tenant-ID
+  siteUrl: 'https://aufrechtnrw.sharepoint.com/sites/AUFRECHTe.V',
+  listName: 'Düsseldorfer Konferenz – Anmeldungen',
+  redirectUri: 'https://aufrechtnrw.sharepoint.com/sites/AUFRECHTe.V/Freigegebene%20Dokumente/Allgemeines/Verein%20Intern/D%C3%BCsseldorfer%20Konferenz%202026/aufrecht-checkin.html',
+};
+
+// ============================================================
+// MSAL – Microsoft Authentication
+// ============================================================
+let accessToken = null;
+let currentUser = null;
+let currentItem = null;
+let cameraStream = null;
+let scanning = false;
+
+const SCOPES = ['https://graph.microsoft.com/Sites.ReadWrite.All'];
+
+function getAuthUrl(){
+  const params = new URLSearchParams({
+    client_id: CONFIG.clientId,
+    response_type: 'token',
+    redirect_uri: CONFIG.redirectUri,
+    scope: SCOPES.join(' '),
+    response_mode: 'fragment',
+    nonce: Math.random().toString(36),
+  });
+  return `https://login.microsoftonline.com/${CONFIG.tenantId}/oauth2/v2.0/authorize?${params}`;
+}
+
+function login(){
+  window.location.href = getAuthUrl();
+}
+
+function logout(){
+  accessToken = null;
+  currentUser = null;
+  sessionStorage.clear();
+  document.getElementById('login-view').classList.remove('hidden');
+  document.getElementById('main-view').classList.add('hidden');
+  document.getElementById('user-bar').classList.add('hidden');
+  document.getElementById('total-count').textContent = '—';
+  document.getElementById('checkin-count').textContent = '—';
+}
+
+function parseTokenFromHash(){
+  const hash = window.location.hash.substring(1);
+  const params = new URLSearchParams(hash);
+  return params.get('access_token');
+}
+
+async function getUserInfo(token){
+  const r = await fetch('https://graph.microsoft.com/v1.0/me', {
+    headers: { Authorization: 'Bearer ' + token }
+  });
+  return r.json();
+}
+
+async function init(){
+  const token = parseTokenFromHash() || sessionStorage.getItem('at');
+  if(token){
+    window.location.hash = '';
+    sessionStorage.setItem('at', token);
+    accessToken = token;
+    try {
+      const user = await getUserInfo(token);
+      currentUser = user;
+      const initials = (user.givenName?.[0]||'') + (user.surname?.[0]||'') || user.displayName?.[0] || '?';
+      document.getElementById('user-avatar').textContent = initials.toUpperCase();
+      document.getElementById('user-name').textContent = user.displayName || user.userPrincipalName;
+      document.getElementById('user-bar').classList.remove('hidden');
+      document.getElementById('login-view').classList.add('hidden');
+      document.getElementById('main-view').classList.remove('hidden');
+      await loadStats();
+    } catch(e){
+      showToast('Anmeldung fehlgeschlagen. Bitte erneut versuchen.', 'error');
+      logout();
+    }
+  }
+}
+
+// ============================================================
+// SHAREPOINT / GRAPH API
+// ============================================================
+async function getSiteId(){
+  const hostname = 'aufrechtnrw.sharepoint.com';
+  const sitePath = '/sites/AUFRECHTe.V';
+  const r = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${hostname}:${sitePath}`,
+    { headers: { Authorization: 'Bearer ' + accessToken } }
+  );
+  const data = await r.json();
+  return data.id;
+}
+
+async function getListId(siteId){
+  const encoded = encodeURIComponent(CONFIG.listName);
+  const r = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists?$filter=displayName eq '${encoded}'`,
+    { headers: { Authorization: 'Bearer ' + accessToken } }
+  );
+  const data = await r.json();
+  return data.value?.[0]?.id;
+}
+
+let _siteId = null;
+let _listId = null;
+
+async function getIds(){
+  if(!_siteId) _siteId = await getSiteId();
+  if(!_listId) _listId = await getListId(_siteId);
+  return { siteId: _siteId, listId: _listId };
+}
+
+async function loadStats(){
+  try {
+    const { siteId, listId } = await getIds();
+    const r = await fetch(
+      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$select=id&$top=999`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const all = await r.json();
+    const total = all.value?.length || 0;
+
+    const r2 = await fetch(
+      `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields($select=Check_x002d_in)&$filter=fields/Check_x002d_in eq 1&$select=id&$top=999`,
+      { headers: { Authorization: 'Bearer ' + accessToken } }
+    );
+    const checked = await r2.json();
+    const checkedCount = checked.value?.length || 0;
+
+    document.getElementById('total-count').textContent = total;
+    document.getElementById('checkin-count').textContent = checkedCount;
+  } catch(e){
+    console.warn('Stats konnte nicht geladen werden:', e);
+  }
+}
+
+async function findByQRID(qrid){
+  const { siteId, listId } = await getIds();
+  const encoded = encodeURIComponent(qrid);
+  const r = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&$filter=fields/QR_x002d_Code_x0020_ID eq '${encoded}'`,
+    { headers: { Authorization: 'Bearer ' + accessToken } }
+  );
+  const data = await r.json();
+  return data.value?.[0] || null;
+}
+
+async function patchCheckin(itemId){
+  const { siteId, listId } = await getIds();
+  const now = new Date().toISOString();
+  const r = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
+    {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        'Check_x002d_in': true,
+        'Check_x002d_In_x0020_Zeit': now,
+      }),
+    }
+  );
+  return r.ok;
+}
+
+// ============================================================
+// UI
+// ============================================================
+function showToast(msg, type=''){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+function showLoading(msg){
+  document.getElementById('scan-view').classList.add('hidden');
+  document.getElementById('result-view').classList.add('hidden');
+  document.getElementById('loading-view').classList.remove('hidden');
+  document.getElementById('loading-msg').textContent = msg || 'Wird geladen...';
+}
+
+function hideLoading(){
+  document.getElementById('loading-view').classList.add('hidden');
+}
+
+function showScanView(){
+  document.getElementById('scan-view').classList.remove('hidden');
+  document.getElementById('result-view').classList.add('hidden');
+  document.getElementById('loading-view').classList.add('hidden');
+}
+
+function showResultView(){
+  document.getElementById('scan-view').classList.add('hidden');
+  document.getElementById('result-view').classList.remove('hidden');
+  document.getElementById('loading-view').classList.add('hidden');
+}
+
+function resetView(){
+  stopCamera();
+  currentItem = null;
+  document.getElementById('qr-input').value = '';
+  showScanView();
+}
+
+async function processQRID(qrid){
+  if(!qrid) return;
+  showLoading('Teilnehmer wird gesucht...');
+  try {
+    const item = await findByQRID(qrid.trim());
+    hideLoading();
+    showResultView();
+    if(!item){
+      document.getElementById('not-found-box').classList.remove('hidden');
+      document.getElementById('found-card').classList.add('hidden');
+      document.getElementById('not-found-msg').textContent = 'Kein Eintrag für QR-ID "' + qrid + '" gefunden.';
+      return;
+    }
+    document.getElementById('not-found-box').classList.add('hidden');
+    document.getElementById('found-card').classList.remove('hidden');
+    currentItem = item;
+
+    const f = item.fields;
+    const name = f.Title || (f.Vorname + ' ' + f.Nachname) || '—';
+    const initials = name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+
+    document.getElementById('res-avatar').textContent = initials;
+    document.getElementById('res-name').textContent = name;
+    document.getElementById('res-org').textContent = f.Organisation || '—';
+    document.getElementById('res-email').textContent = f.E_x002d_Mail || f.Email || '—';
+    document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || qrid;
+
+    const statusBadge = document.getElementById('res-status');
+    statusBadge.textContent = f.Status || '—';
+    statusBadge.className = 'badge ' + (f.Status === 'Bestätigt' ? 'badge-green' : 'badge-amber');
+
+    const btn = document.getElementById('checkin-btn');
+    const alreadyBox = document.getElementById('already-box');
+    const checkedIn = f['Check_x002d_in'] === true || f['Check_x002d_in'] === 1;
+
+    if(checkedIn){
+      alreadyBox.classList.remove('hidden');
+      const time = f['Check_x002d_In_x0020_Zeit'];
+      document.getElementById('already-time').textContent = time ? 'Eingecheckt am ' + new Date(time).toLocaleString('de-DE') : '';
+      btn.className = 'checkin-btn disabled';
+      btn.textContent = 'Bereits eingecheckt';
+      btn.onclick = null;
+    } else {
+      alreadyBox.classList.add('hidden');
+      btn.className = 'checkin-btn ready';
+      btn.textContent = 'Jetzt einchecken';
+      btn.onclick = doCheckin;
+    }
+  } catch(e){
+    hideLoading();
+    showScanView();
+    showToast('Fehler beim Suchen. Bitte erneut versuchen.', 'error');
+    console.error(e);
+  }
+}
+
+async function searchManual(){
+  const val = document.getElementById('qr-input').value.trim();
+  if(!val){ showToast('Bitte QR-Code ID eingeben'); return; }
+  await processQRID(val);
+}
+
+async function doCheckin(){
+  if(!currentItem) return;
+  const btn = document.getElementById('checkin-btn');
+  btn.className = 'checkin-btn disabled';
+  btn.textContent = 'Wird gespeichert...';
+  try {
+    const ok = await patchCheckin(currentItem.id);
+    if(ok){
+      btn.className = 'checkin-btn done';
+      btn.textContent = 'Erfolgreich eingecheckt ✓';
+      btn.onclick = null;
+      document.getElementById('already-box').classList.remove('hidden');
+      document.getElementById('already-time').textContent = 'Gerade eingecheckt · ' + new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'}) + ' Uhr';
+      showToast('Check-in erfolgreich!', 'success');
+      await loadStats();
+    } else {
+      btn.className = 'checkin-btn ready';
+      btn.textContent = 'Jetzt einchecken';
+      showToast('Fehler beim Speichern. Bitte erneut versuchen.', 'error');
+    }
+  } catch(e){
+    btn.className = 'checkin-btn ready';
+    btn.textContent = 'Jetzt einchecken';
+    showToast('Netzwerkfehler. Bitte erneut versuchen.', 'error');
+  }
+}
+
+// ============================================================
+// KAMERA / QR-SCANNER (jsQR)
+// ============================================================
+function loadJsQR(){
+  return new Promise((resolve,reject)=>{
+    if(window.jsQR){ resolve(); return; }
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/jsqr/1.4.0/jsQR.min.js';
+    s.onload = resolve;
+    s.onerror = reject;
+    document.head.appendChild(s);
+  });
+}
+
+async function toggleCamera(){
+  if(cameraStream){ stopCamera(); return; }
+  await startCamera();
+}
+
+async function startCamera(){
+  try {
+    await loadJsQR();
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: 'environment', width:{ideal:1280}, height:{ideal:720} }
+    });
+    cameraStream = stream;
+    const video = document.getElementById('video');
+    video.srcObject = stream;
+    video.classList.remove('hidden');
+    document.getElementById('scan-overlay').style.opacity = '0.6';
+    document.getElementById('camera-btn').textContent = 'Kamera stoppen';
+    document.getElementById('camera-btn').classList.add('active');
+    document.getElementById('scan-hint').textContent = 'QR-Code in Rahmen halten';
+    scanning = true;
+    requestAnimationFrame(scanFrame);
+  } catch(e){
+    showToast('Kamera nicht verfügbar. Bitte manuell eingeben.', 'error');
+  }
+}
+
+function stopCamera(){
+  scanning = false;
+  if(cameraStream){
+    cameraStream.getTracks().forEach(t=>t.stop());
+    cameraStream = null;
+  }
+  const video = document.getElementById('video');
+  video.srcObject = null;
+  video.classList.add('hidden');
+  document.getElementById('scan-overlay').style.opacity = '1';
+  document.getElementById('camera-btn').textContent = 'Kamera starten';
+  document.getElementById('camera-btn').classList.remove('active');
+  document.getElementById('scan-hint').textContent = 'Tippen zum Scannen';
+}
+
+function scanFrame(){
+  if(!scanning) return;
+  const video = document.getElementById('video');
+  const canvas = document.getElementById('canvas');
+  if(video.readyState === video.HAVE_ENOUGH_DATA){
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    const code = window.jsQR && jsQR(imageData.data, imageData.width, imageData.height, {inversionAttempts:'dontInvert'});
+    if(code && code.data){
+      stopCamera();
+      processQRID(code.data);
+      return;
+    }
+  }
+  requestAnimationFrame(scanFrame);
+}
+
+// Enter-Taste im Input
+document.getElementById('qr-input')?.addEventListener('keydown', e => {
+  if(e.key === 'Enter') searchManual();
+});
+
+// Start
+init();
+</script>
+</body>
+</html>
