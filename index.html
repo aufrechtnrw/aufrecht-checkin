@@ -10659,13 +10659,23 @@ async function doCheckin(){
   try {
     const ok = await patchCheckin(currentItem.id);
     if(ok){
-      btn.className = 'btn-checkin done'; btn.textContent = 'Erfolgreich eingecheckt ✓';
-      document.getElementById('already-box').classList.remove('hidden');
-      document.getElementById('already-time').textContent = 'Gerade eingecheckt · '+new Date().toLocaleTimeString('de-DE',{hour:'2-digit',minute:'2-digit'})+' Uhr';
+      // Show success state - NO already-box yet, just green button
+      btn.className = 'btn-checkin done'; 
+      btn.textContent = 'Erfolgreich eingecheckt ✓';
+      // Show time below button instead of red box
+      document.getElementById('already-box').classList.add('hidden');
       showToast('Check-in erfolgreich!', 'success');
       await loadStats();
-    } else { btn.disabled=false; btn.textContent='Jetzt einchecken'; showToast('Fehler beim Speichern', 'error'); }
-  } catch(e){ btn.disabled=false; btn.textContent='Jetzt einchecken'; showToast('Netzwerkfehler', 'error'); }
+    } else { 
+      btn.disabled=false; 
+      btn.textContent='Jetzt einchecken'; 
+      showToast('Fehler beim Speichern', 'error'); 
+    }
+  } catch(e){ 
+    btn.disabled=false; 
+    btn.textContent='Jetzt einchecken'; 
+    showToast('Netzwerkfehler', 'error'); 
+  }
 }
 
 function resetView(){ stopCamera(); currentItem=null; document.getElementById('qr-input').value=''; document.getElementById('suggestions').classList.add('hidden'); showScanView(); }
