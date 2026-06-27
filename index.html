@@ -10444,7 +10444,7 @@ async function loadStats(){
     document.getElementById('total-count').textContent = d1.value?.length || 0;
     const r2 = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields($select=Check_x002d_in)&$top=999`, {headers:{Authorization:'Bearer '+accessToken}});
     const d2 = await r2.json();
-    const checked = d2.value?.filter(i => i.fields?.['Check_x002d_IN'] === true || i.fields?.['Check_x002d_in'] === true).length || 0;
+    const checked = d2.value?.filter(i => i.fields?.['Check_x002d_IN'] === true).length || 0;
     document.getElementById('checkin-count').textContent = checked;
   } catch(e){ console.warn('Stats error', e); }
 }
@@ -10476,61 +10476,29 @@ async function findByQRID(qrid){
 async function patchCheckin(itemId){
   const siteId = await getSiteId();
   const listId = await getListId();
-  
-  // First: get the actual field names from the list
-  const fieldsResp = await fetch(
-    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
-    {headers:{Authorization:'Bearer '+accessToken}}
-  );
-  const currentFields = await fieldsResp.json();
-  console.log('Current fields:', JSON.stringify(Object.keys(currentFields)));
-  
-  // Find the correct field names for Check-in and Check-In Zeit
-  const checkinField = Object.keys(currentFields).find(k => 
-    k.toLowerCase().includes('check') && !k.toLowerCase().includes('zeit') && !k.toLowerCase().includes('time')
-  );
-  const zeitField = Object.keys(currentFields).find(k => 
-    k.toLowerCase().includes('zeit') || k.toLowerCase().includes('time')
-  );
-  
-  console.log('All available fields:', JSON.stringify(Object.keys(currentFields)));
-  console.log('Checkin field found:', checkinField, 'Zeit field found:', zeitField);
-  
-  const updateData = {};
-  if(checkinField) updateData[checkinField] = true;
-  if(zeitField) updateData[zeitField] = new Date().toISOString();
-  
-  // Fallback to known field names - try all variants
-  if(!checkinField){
-    updateData['Check_x002d_IN'] = true;   // Check-IN
-    updateData['Check_x002d_in'] = true;   // Check-in
-  }
-  if(!zeitField){
-    updateData['Check_x002d_IN_x002d_Zeit'] = new Date().toISOString();
-    updateData['Check_x002d_In_x0020_Zeit'] = new Date().toISOString();
-  }
-  
-  console.log('Updating with:', JSON.stringify(updateData));
-  
+
   const r = await fetch(
     `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
     {
-      method:'PATCH',
-      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
-      body: JSON.stringify(updateData),
+      method: 'PATCH',
+      headers: {Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        'Check_x002d_IN': true,
+        'Check_x002d_IN_x002d_Zeit': new Date().toISOString()
+      }),
     }
   );
-  
+
   if(!r.ok){
-    const err = await r.json();
+    const err = await r.json().catch(()=>({}));
     console.error('Patch error:', JSON.stringify(err));
     showToast('Fehler: ' + (err.error?.message || r.status), 'error');
+    return false;
   }
-  
-  // Invalidate cache
+
+  // Invalidate cache so updated status shows
   allItems = null;
-  
-  return r.ok;
+  return true;
 }
 
 function showToast(msg, type=''){
@@ -10566,14 +10534,14 @@ async function processQRID(qrid){
     document.getElementById('res-avatar').textContent = initials;
     document.getElementById('res-name').textContent = name;
     // Try different possible field names for Organisation
-    const org = f['Organisation_x002f_Arbeitgeber'] || f.Organisation || f['OrganisationArbeitgeber'] || f.Berufsfeld || '';
+    const org = f['Organisation_x002f_Arbeitgaber'] || '';
     document.getElementById('res-org').textContent = org || '—';
     document.getElementById('res-email').textContent = f['E_x002d_Mail'] || f.Email || '—';
     document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || qrid;
     const sb = document.getElementById('res-status');
     sb.textContent = f.Status || '—';
     sb.className = 'badge '+(f.Status==='Bestätigt'?'badge-green':'badge-amber');
-    const checked = f['Check_x002d_IN'] === true || f['Check_x002d_in'] === true || f['Check_x002d_IN'] === 1;
+    const checked = f['Check_x002d_IN'] === true || f['Check_x002d_IN'] === 1;
     const btn = document.getElementById('checkin-btn');
     const alreadyBox = document.getElementById('already-box');
     if(checked){
@@ -10625,7 +10593,7 @@ function searchLive(val){
       
       sugDiv.innerHTML = matches.map(i => {
         const f = i.fields;
-        const checked = f['Check_x002d_IN'] === true || f['Check_x002d_in'] === true || f['Check_x002d_IN'] === 1;
+        const checked = f['Check_x002d_IN'] === true || f['Check_x002d_IN'] === 1;
         return `<div class="suggestion-item" onclick="selectSuggestion('${i.id}')">
           <div>
             <div class="suggestion-name">${f.Title || '—'}</div>
@@ -10656,14 +10624,14 @@ async function selectSuggestion(itemId){
     document.getElementById('res-avatar').textContent = initials;
     document.getElementById('res-name').textContent = name;
     // Try different possible field names for Organisation
-    const org = f['Organisation_x002f_Arbeitgeber'] || f.Organisation || f['OrganisationArbeitgeber'] || f.Berufsfeld || '';
+    const org = f['Organisation_x002f_Arbeitgaber'] || '';
     document.getElementById('res-org').textContent = org || '—';
     document.getElementById('res-email').textContent = f['E_x002d_Mail'] || f.Email || '—';
     document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || '—';
     const sb = document.getElementById('res-status');
     sb.textContent = f.Status || '—';
     sb.className = 'badge '+(f.Status==='Bestätigt'?'badge-green':'badge-amber');
-    const checked = f['Check_x002d_IN'] === true || f['Check_x002d_in'] === true || f['Check_x002d_IN'] === 1;
+    const checked = f['Check_x002d_IN'] === true || f['Check_x002d_IN'] === 1;
     const btn = document.getElementById('checkin-btn');
     const alreadyBox = document.getElementById('already-box');
     if(checked){
