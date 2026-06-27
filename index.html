@@ -450,52 +450,65 @@ async function toggleCamera(){
 }
 
 async function startCamera(){
+  // Check if getUserMedia is available at all
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    showToast('Kamera wird von diesem Browser nicht unterstützt. Bitte Safari verwenden.', 'error');
+    return;
+  }
+
   try {
     await loadJsQR();
-    
-    // iOS PWA fix: try different constraints
-    let stream = null;
-    const constraints = [
-      {video:{facingMode:{exact:'environment'}}},
-      {video:{facingMode:'environment'}},
-      {video:{facingMode:'user'}},
-      {video:true}
-    ];
-    
-    for(const c of constraints){
-      try {
-        stream = await navigator.mediaDevices.getUserMedia(c);
-        if(stream) break;
-      } catch(e){ continue; }
-    }
-    
-    if(!stream){
-      showToast('Kamera konnte nicht gestartet werden. Bitte manuell eingeben.', 'error');
-      return;
-    }
-    
-    cameraStream = stream;
-    const video = document.getElementById('video');
-    video.srcObject = stream;
-    
-    // iOS requires user interaction and these attributes
-    video.setAttribute('playsinline', true);
-    video.setAttribute('muted', true);
-    video.setAttribute('autoplay', true);
-    video.classList.remove('hidden');
-    
-    // iOS sometimes needs explicit play()
-    try { await video.play(); } catch(e){ console.log('play() error:', e); }
-    
-    document.getElementById('scan-hint').style.display='none';
-    document.getElementById('cam-btn').textContent='Kamera stoppen';
-    document.getElementById('cam-btn').classList.add('off');
-    scanning = true;
-    requestAnimationFrame(scanFrame);
-  } catch(e){ 
-    console.error('Camera error:', e);
-    showToast('Kamera-Fehler: ' + e.message, 'error'); 
+  } catch(e){
+    showToast('Scanner konnte nicht geladen werden.', 'error');
+    return;
   }
+
+  // iOS PWA: try constraints one by one
+  const constraints = [
+    {video:{facingMode:'environment', width:{ideal:1280}, height:{ideal:720}}},
+    {video:{facingMode:'environment'}},
+    {video:true}
+  ];
+
+  let stream = null;
+  let lastError = null;
+
+  for(const c of constraints){
+    try {
+      stream = await navigator.mediaDevices.getUserMedia(c);
+      if(stream) break;
+    } catch(e){
+      lastError = e;
+      console.log('Constraint failed:', JSON.stringify(c), e.name, e.message);
+      continue;
+    }
+  }
+
+  if(!stream){
+    const errName = lastError ? lastError.name : 'Unbekannt';
+    const errMsg = lastError ? lastError.message : '';
+    if(errName === 'NotAllowedError' || errName === 'PermissionDeniedError'){
+      showToast('Kamera-Zugriff verweigert. Bitte in Einstellungen → Safari → Kamera → Erlauben.', 'error');
+    } else if(errName === 'NotFoundError'){
+      showToast('Keine Kamera gefunden.', 'error');
+    } else {
+      showToast('Kamera-Fehler: ' + errName + ' - Bitte App in Safari öffnen.', 'error');
+    }
+    return;
+  }
+
+  cameraStream = stream;
+  const video = document.getElementById('video');
+  video.srcObject = stream;
+  video.classList.remove('hidden');
+
+  try { await video.play(); } catch(e){ console.log('play() error:', e.name); }
+
+  document.getElementById('scan-hint').style.display = 'none';
+  document.getElementById('cam-btn').textContent = 'Kamera stoppen';
+  document.getElementById('cam-btn').classList.add('off');
+  scanning = true;
+  requestAnimationFrame(scanFrame);
 }
 
 function stopCamera(){
