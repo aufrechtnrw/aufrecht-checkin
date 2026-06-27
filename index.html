@@ -85,6 +85,13 @@ html,body{height:100%;font-family:var(--font);background:var(--mist);-webkit-fon
 .btn-checkin{width:100%;background:var(--green);color:#fff;border:none;border-radius:999px;padding:16px;font-family:var(--font);font-size:17px;font-weight:800;cursor:pointer;margin-bottom:10px;display:block;text-align:center}
 .btn-checkin:disabled{background:var(--mist-300);color:var(--slate-400);cursor:not-allowed}
 .btn-checkin.done{background:#1e7e34}
+.suggestions{margin-top:6px;background:rgba(255,255,255,0.08);border-radius:10px;overflow:hidden;max-height:200px;overflow-y:auto}
+.suggestion-item{padding:10px 14px;color:#fff;font-size:14px;font-weight:600;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.07);display:flex;align-items:center;justify-content:space-between}
+.suggestion-item:last-child{border-bottom:none}
+.suggestion-item:active{background:rgba(255,255,255,0.15)}
+.suggestion-name{flex:1}
+.suggestion-org{font-size:11px;color:rgba(255,255,255,0.4);font-weight:500}
+.suggestion-checked{color:#28a745;font-size:11px;font-weight:700}
 .btn-reset{width:100%;background:#1a2c33;color:#fff;border:none;border-radius:999px;padding:14px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;display:block;text-align:center}
 .not-found{text-align:center;padding:28px;background:var(--mist);border-radius:12px;margin-bottom:12px}
 .not-found h3{color:var(--slate);font-size:17px;font-weight:800;margin-bottom:6px}
@@ -10252,11 +10259,12 @@ function findAlignmentPattern(matrix, alignmentPatternQuads, topRight, topLeft, 
             <div class="scan-hint" id="scan-hint">Tippen zum Scannen</div>
           </div>
           <button class="btn-cam" id="cam-btn" onclick="toggleCamera()">Kamera starten</button>
-          <div class="divider">oder manuell eingeben</div>
+          <div class="divider">oder Namen suchen</div>
           <div class="manual-row">
-            <input type="text" id="qr-input" class="manual-input" placeholder="AUFRECHT-2026-1" />
+            <input type="text" id="qr-input" class="manual-input" placeholder="Vorname Nachname..." oninput="searchLive(this.value)" autocomplete="off" />
             <button class="btn-search" onclick="searchManual()">Suchen</button>
           </div>
+          <div id="suggestions" class="suggestions hidden"></div>
         </div>
       </div>
 
@@ -10526,9 +10534,97 @@ async function processQRID(qrid){
   } catch(e){ hideLoading(); showScanView(); showToast('Fehler beim Suchen', 'error'); }
 }
 
+let allItems = null;
+let searchTimeout = null;
+
+async function loadAllItems(){
+  if(allItems) return allItems;
+  const siteId = await getSiteId();
+  const listId = await getListId();
+  const r = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items?$expand=fields&$top=999`,
+    {headers:{Authorization:'Bearer '+accessToken}}
+  );
+  const d = await r.json();
+  allItems = d.value || [];
+  return allItems;
+}
+
+function searchLive(val){
+  clearTimeout(searchTimeout);
+  const sugDiv = document.getElementById('suggestions');
+  if(!val || val.length < 2){ sugDiv.classList.add('hidden'); sugDiv.innerHTML=''; return; }
+  searchTimeout = setTimeout(async () => {
+    try {
+      const items = await loadAllItems();
+      const q = val.toLowerCase();
+      const matches = items.filter(i => {
+        const name = (i.fields?.Title || '').toLowerCase();
+        return name.includes(q);
+      }).slice(0, 8);
+      
+      if(matches.length === 0){
+        sugDiv.innerHTML = '<div class="suggestion-item"><span class="suggestion-name">Keine Ergebnisse</span></div>';
+        sugDiv.classList.remove('hidden');
+        return;
+      }
+      
+      sugDiv.innerHTML = matches.map(i => {
+        const f = i.fields;
+        const checked = f['Check_x002d_in'] === true;
+        return `<div class="suggestion-item" onclick="selectSuggestion('${i.id}')">
+          <div>
+            <div class="suggestion-name">${f.Title || '—'}</div>
+            <div class="suggestion-org">${f.Organisation || ''}</div>
+          </div>
+          ${checked ? '<span class="suggestion-checked">✓ Eingecheckt</span>' : ''}
+        </div>`;
+      }).join('');
+      sugDiv.classList.remove('hidden');
+    } catch(e){ console.error('Search error:', e); }
+  }, 300);
+}
+
+async function selectSuggestion(itemId){
+  document.getElementById('suggestions').classList.add('hidden');
+  document.getElementById('qr-input').value = '';
+  const items = await loadAllItems();
+  const item = items.find(i => i.id === itemId);
+  if(item){
+    stopCamera();
+    showResultView();
+    document.getElementById('not-found').classList.add('hidden');
+    document.getElementById('found-card').classList.remove('hidden');
+    currentItem = item;
+    const f = item.fields;
+    const name = f.Title || '—';
+    const initials = name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+    document.getElementById('res-avatar').textContent = initials;
+    document.getElementById('res-name').textContent = name;
+    document.getElementById('res-org').textContent = f.Organisation || '—';
+    document.getElementById('res-email').textContent = f['E_x002d_Mail'] || f.Email || '—';
+    document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || '—';
+    const sb = document.getElementById('res-status');
+    sb.textContent = f.Status || '—';
+    sb.className = 'badge '+(f.Status==='Bestätigt'?'badge-green':'badge-amber');
+    const checked = f['Check_x002d_in'] === true;
+    const btn = document.getElementById('checkin-btn');
+    const alreadyBox = document.getElementById('already-box');
+    if(checked){
+      alreadyBox.classList.remove('hidden');
+      const t = f['Check_x002d_In_x0020_Zeit'];
+      document.getElementById('already-time').textContent = t ? 'Eingecheckt: '+new Date(t).toLocaleString('de-DE') : '';
+      btn.disabled = true; btn.textContent = 'Bereits eingecheckt'; btn.className = 'btn-checkin';
+    } else {
+      alreadyBox.classList.add('hidden');
+      btn.disabled = false; btn.textContent = 'Jetzt einchecken'; btn.className = 'btn-checkin';
+    }
+  }
+}
+
 async function searchManual(){
   const val = document.getElementById('qr-input').value.trim();
-  if(!val){ showToast('Bitte QR-Code ID eingeben'); return; }
+  if(!val){ showToast('Bitte Namen eingeben'); return; }
   await processQRID(val);
 }
 
@@ -10548,7 +10644,7 @@ async function doCheckin(){
   } catch(e){ btn.disabled=false; btn.textContent='Jetzt einchecken'; showToast('Netzwerkfehler', 'error'); }
 }
 
-function resetView(){ stopCamera(); currentItem=null; document.getElementById('qr-input').value=''; showScanView(); }
+function resetView(){ stopCamera(); currentItem=null; document.getElementById('qr-input').value=''; document.getElementById('suggestions').classList.add('hidden'); showScanView(); }
 
 async function loadJsQR(){ return Promise.resolve(); }
 
