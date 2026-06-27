@@ -10476,11 +10476,55 @@ async function findByQRID(qrid){
 async function patchCheckin(itemId){
   const siteId = await getSiteId();
   const listId = await getListId();
-  const r = await fetch(`https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`, {
-    method:'PATCH',
-    headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
-    body: JSON.stringify({'Check_x002d_in': true, 'Check_x002d_In_x0020_Zeit': new Date().toISOString()}),
-  });
+  
+  // First: get the actual field names from the list
+  const fieldsResp = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
+    {headers:{Authorization:'Bearer '+accessToken}}
+  );
+  const currentFields = await fieldsResp.json();
+  console.log('Current fields:', JSON.stringify(Object.keys(currentFields)));
+  
+  // Find the correct field names for Check-in and Check-In Zeit
+  const checkinField = Object.keys(currentFields).find(k => 
+    k.toLowerCase().includes('check') && !k.toLowerCase().includes('zeit') && !k.toLowerCase().includes('time')
+  );
+  const zeitField = Object.keys(currentFields).find(k => 
+    k.toLowerCase().includes('zeit') || k.toLowerCase().includes('time')
+  );
+  
+  console.log('Checkin field:', checkinField, 'Zeit field:', zeitField);
+  
+  const updateData = {};
+  if(checkinField) updateData[checkinField] = true;
+  if(zeitField) updateData[zeitField] = new Date().toISOString();
+  
+  // Fallback to known field names
+  if(!checkinField){
+    updateData['Check_x002d_in'] = true;
+    updateData['Checkin'] = true;
+  }
+  
+  console.log('Updating with:', JSON.stringify(updateData));
+  
+  const r = await fetch(
+    `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
+    {
+      method:'PATCH',
+      headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},
+      body: JSON.stringify(updateData),
+    }
+  );
+  
+  if(!r.ok){
+    const err = await r.json();
+    console.error('Patch error:', JSON.stringify(err));
+    showToast('Fehler: ' + (err.error?.message || r.status), 'error');
+  }
+  
+  // Invalidate cache
+  allItems = null;
+  
   return r.ok;
 }
 
@@ -10516,7 +10560,12 @@ async function processQRID(qrid){
     const initials = name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
     document.getElementById('res-avatar').textContent = initials;
     document.getElementById('res-name').textContent = name;
-    document.getElementById('res-org').textContent = f.Organisation || '—';
+    // Try different possible field names for Organisation
+    // Log all fields to find correct Organisation field name
+    console.log('All fields:', JSON.stringify(Object.keys(f)));
+    console.log('Organisation value:', f.Organisation, f['Berufsfeld']);
+    const org = f.Organisation || f.Berufsfeld || f.organization || f['Firma'] || '';
+    document.getElementById('res-org').textContent = org || '—';
     document.getElementById('res-email').textContent = f['E_x002d_Mail'] || f.Email || '—';
     document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || qrid;
     const sb = document.getElementById('res-status');
@@ -10604,7 +10653,12 @@ async function selectSuggestion(itemId){
     const initials = name.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
     document.getElementById('res-avatar').textContent = initials;
     document.getElementById('res-name').textContent = name;
-    document.getElementById('res-org').textContent = f.Organisation || '—';
+    // Try different possible field names for Organisation
+    // Log all fields to find correct Organisation field name
+    console.log('All fields:', JSON.stringify(Object.keys(f)));
+    console.log('Organisation value:', f.Organisation, f['Berufsfeld']);
+    const org = f.Organisation || f.Berufsfeld || f.organization || f['Firma'] || '';
+    document.getElementById('res-org').textContent = org || '—';
     document.getElementById('res-email').textContent = f['E_x002d_Mail'] || f.Email || '—';
     document.getElementById('res-qrid').textContent = f['QR_x002d_Code_x0020_ID'] || '—';
     const sb = document.getElementById('res-status');
