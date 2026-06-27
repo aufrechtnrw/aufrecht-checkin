@@ -10492,24 +10492,38 @@ async function patchCheckin(itemId){
   const siteId = await getSiteId();
   const listId = await getListId();
 
+  // For SharePoint Boolean (Yes/No) columns via Graph API
+  // The internal field name might need the full OData format
+  const patchBody = {
+    'Check_x002d_IN': true,
+    'Check_x002d_IN_x002d_Zeit': new Date().toISOString()
+  };
+  
+  console.log('Sending patch:', JSON.stringify(patchBody));
+  
   const r = await fetch(
     `https://graph.microsoft.com/v1.0/sites/${siteId}/lists/${listId}/items/${itemId}/fields`,
     {
       method: 'PATCH',
-      headers: {Authorization: 'Bearer ' + accessToken, 'Content-Type': 'application/json'},
-      body: JSON.stringify({
-        'Check_x002d_IN': true,
-        'Check_x002d_IN_x002d_Zeit': new Date().toISOString()
-      }),
+      headers: {
+        Authorization: 'Bearer ' + accessToken,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(patchBody),
     }
   );
+  
+  const responseData = await r.json();
+  console.log('Patch response:', JSON.stringify(responseData));
 
   if(!r.ok){
-    const err = await r.json().catch(()=>({}));
-    console.error('Patch error:', JSON.stringify(err));
-    showToast('Fehler: ' + (err.error?.message || r.status), 'error');
+    console.error('Patch error:', JSON.stringify(responseData));
+    showToast('Fehler: ' + (responseData.error?.message || r.status), 'error');
     return false;
   }
+  
+  console.log('Check-IN value in response:', responseData['Check_x002d_IN']);
 
   // Invalidate cache so updated status shows
   allItems = null;
